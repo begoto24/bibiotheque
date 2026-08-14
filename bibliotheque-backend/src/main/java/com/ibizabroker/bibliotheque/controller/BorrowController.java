@@ -6,6 +6,8 @@ import com.ibizabroker.bibliotheque.dao.UsersRepository;
 import com.ibizabroker.bibliotheque.entity.Books;
 import com.ibizabroker.bibliotheque.entity.Borrow;
 import com.ibizabroker.bibliotheque.entity.Users;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.List;
 @Repository
 @RestController
 @RequestMapping("/borrow")
+@Tag(name = "Emprunts", description = "Emprunt et retour de livres")
 public class BorrowController {
 
     @Autowired
@@ -29,6 +32,7 @@ public class BorrowController {
     private BooksRepository booksRepository;
 
     @PostMapping
+    @Operation(summary = "Emprunte un livre (stock décrémenté, échéance à 7 jours)")
     public String borrowBook(@RequestBody Borrow borrow) {
         Users user = usersRepository.findById(borrow.getUserId()).get();
         Books book = booksRepository.findById(borrow.getBookId()).get();
@@ -53,11 +57,13 @@ public class BorrowController {
     }
 
     @GetMapping
+    @Operation(summary = "Liste tous les emprunts")
     public List<Borrow> getAllBorrow() {
         return borrowRepository.findAll();
     }
 
     @PutMapping
+    @Operation(summary = "Rend un livre (stock incrémenté)")
     public Borrow returnBook(@RequestBody Borrow borrow) {
         Borrow borrowBook = borrowRepository.findById(borrow.getBorrowId()).get();
         Books book = booksRepository.findById(borrowBook.getBookId()).get();
@@ -71,11 +77,13 @@ public class BorrowController {
     }
 
     @GetMapping("user/{id}")
+    @Operation(summary = "Liste les emprunts d'un utilisateur")
     public List<Borrow> booksBorrowedByUser(@PathVariable Integer id) {
         return borrowRepository.findByUserId(id);
     }
 
     @GetMapping("book/{id}")
+    @Operation(summary = "Historique des emprunts d'un livre")
     public List<Borrow> bookBorrowHistory(@PathVariable Integer id) {
         return borrowRepository.findByBookId(id);
     }

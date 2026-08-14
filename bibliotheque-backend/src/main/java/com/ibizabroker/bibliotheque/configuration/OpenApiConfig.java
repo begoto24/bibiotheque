@@ -21,7 +21,7 @@ public class OpenApiConfig {
                                 .bearerFormat("JWT")))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .info(new Info()
-                        .title("API Bibliothèque")
+                        .title("API de Gestion de Bibliothèque")
                         .description("API REST de gestion de bibliothèque — Spring Boot")
                         .version("1.0.0"));
     }
