@@ -1,0 +1,28 @@
+# Séance 1 — Tâche 2 : démarrer PostgreSQL dans un conteneur Docker.
+#
+# Utilisation (Docker Desktop doit être installé et démarré) :
+#   docker compose up -d
+#
+# La base "KAFOKAMLybrery48" est créée automatiquement au premier démarrage
+# par le script docker/init/01-create-db.sql.
+#
+# ⚠️ Attention : si le PostgreSQL installé sur la machine (pgAdmin) tourne déjà
+# sur le port 5432, il y aura conflit de port. Arrêter le service local avant
+# `docker compose up`, ou changer le port mappé ici ET dans application.properties.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bibliotheque-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init:/docker-entrypoint-initdb.d
+
+volumes:
+  postgres_data:
