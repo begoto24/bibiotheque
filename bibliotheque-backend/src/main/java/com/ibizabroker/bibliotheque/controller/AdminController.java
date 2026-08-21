@@ -3,6 +3,8 @@ package com.ibizabroker.bibliotheque.controller;
 import com.ibizabroker.bibliotheque.dao.UsersRepository;
 import com.ibizabroker.bibliotheque.entity.Users;
 import com.ibizabroker.bibliotheque.exceptions.NotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +16,7 @@ import java.util.List;
 @CrossOrigin("http://localhost:4200/")
 @RestController
 @RequestMapping("/admin")
+@Tag(name = "Utilisateurs", description = "Gestion des utilisateurs")
 public class AdminController {
 
     @Autowired
@@ -23,6 +26,7 @@ public class AdminController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/users")
+    @Operation(summary = "Crée un utilisateur (mot de passe chiffré)")
 //    @PreAuthorize("hasRole('Admin')")
     public Users addUserByAdmin(@RequestBody Users user) {
 //        Role role = new Role();
@@ -40,12 +44,14 @@ public class AdminController {
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('Admin')")
+    @Operation(summary = "Liste tous les utilisateurs")
     public List<Users> getAllUsers() {
         return usersRepository.findAll();
     }
 
     @PreAuthorize("hasRole('Admin')")
     @GetMapping("/users/{id}")
+    @Operation(summary = "Affiche un utilisateur par son identifiant")
     public ResponseEntity<Users> getUserById(@PathVariable Integer id) {
         Users user = usersRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id "+ id +" does not exist."));
         return ResponseEntity.ok(user);
@@ -53,6 +59,7 @@ public class AdminController {
 
     @PreAuthorize("hasRole('Admin')")
     @PutMapping("/users/{id}")
+    @Operation(summary = "Modifie un utilisateur")
     public ResponseEntity<Users> updateUser(@PathVariable Integer id, @RequestBody Users userDetails) {
         Users user = usersRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id "+ id +" does not exist."));
 

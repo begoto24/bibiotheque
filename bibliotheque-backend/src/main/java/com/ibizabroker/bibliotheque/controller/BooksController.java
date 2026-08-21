@@ -3,6 +3,8 @@ package com.ibizabroker.bibliotheque.controller;
 import com.ibizabroker.bibliotheque.dao.BooksRepository;
 import com.ibizabroker.bibliotheque.entity.Books;
 import com.ibizabroker.bibliotheque.exceptions.NotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,18 +17,21 @@ import java.util.Map;
 @CrossOrigin("http://localhost:4200/")
 @RestController
 @RequestMapping("/admin")
+@Tag(name = "Livres", description = "Gestion des livres")
 public class BooksController {
 
     @Autowired
     private BooksRepository booksRepository;
 
     @GetMapping("/books")
+    @Operation(summary = "Liste tous les livres")
     public List<Books> getAllBooks(){
         return booksRepository.findAll();
     }
 
     @PreAuthorize("hasRole('Admin')")
     @GetMapping("/books/{id}")
+    @Operation(summary = "Affiche un livre par son identifiant")
     public ResponseEntity<Books> getBookById(@PathVariable Integer id) {
         Books book = booksRepository.findById(id).orElseThrow(() -> new NotFoundException("Book with id "+ id +" does not exist."));
         return ResponseEntity.ok(book);
@@ -34,12 +39,14 @@ public class BooksController {
 
     @PreAuthorize("hasRole('Admin')")
     @PostMapping("/books")
+    @Operation(summary = "Crée un livre")
     public Books createBook(@RequestBody Books book) {
         return booksRepository.save(book);
     }
 
     @PreAuthorize("hasRole('Admin')")
     @PutMapping("/books/{id}")
+    @Operation(summary = "Modifie un livre")
     public ResponseEntity<Books> updateBook(@PathVariable Integer id, @RequestBody Books bookDetails) {
         Books book = booksRepository.findById(id).orElseThrow(() -> new NotFoundException("Book with id "+ id +" does not exist."));
 
@@ -54,6 +61,7 @@ public class BooksController {
 
     @PreAuthorize("hasRole('Admin')")
     @DeleteMapping("/books/{id}")
+    @Operation(summary = "Supprime un livre")
     public ResponseEntity<Map<String, Boolean>> deleteBook(@PathVariable Integer id) {
         Books book = booksRepository.findById(id).orElseThrow(() -> new NotFoundException("Book with id "+ id +" does not exist."));
 
