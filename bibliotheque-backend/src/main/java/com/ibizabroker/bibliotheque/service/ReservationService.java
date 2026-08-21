@@ -13,7 +13,9 @@ import com.ibizabroker.bibliotheque.exceptions.BadRequestException;
 import com.ibizabroker.bibliotheque.exceptions.ConflictException;
 import com.ibizabroker.bibliotheque.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -39,6 +41,8 @@ public class ReservationService {
     private UsersRepository usersRepository;
 
     public ReservationResponseDTO creer(ReservationRequestDTO request) {
+        expirerReservationsDepassees();
+
         if (request.getLivreId() == null) {
             throw new BadRequestException("livreId manquant");
         }
@@ -87,6 +91,8 @@ public class ReservationService {
     }
 
     public List<ReservationResponseDTO> lister(ReservationStatut statut, Integer adherentId) {
+        expirerReservationsDepassees();
+
         List<Reservation> reservations;
         if (statut != null && adherentId != null) {
             reservations = reservationRepository.findByStatutAndAdherent_UserId(statut, adherentId);
@@ -100,11 +106,20 @@ public class ReservationService {
         return reservations.stream().map(this::toDto).collect(Collectors.toList());
     }
 
+    public List<ReservationResponseDTO> listerExpirees() {
+        expirerReservationsDepassees();
+        return reservationRepository.findByStatut(ReservationStatut.EXPIREE).stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     public ReservationResponseDTO consulter(Integer id) {
+        expirerReservationsDepassees();
         return toDto(trouverOu404(id));
     }
 
     public ReservationResponseDTO annuler(Integer id) {
+        expirerReservationsDepassees();
         Reservation reservation = trouverOu404(id);
 
         // RG-06 : états terminaux non modifiables
@@ -127,6 +142,23 @@ public class ReservationService {
     public void supprimer(Integer id) {
         Reservation reservation = trouverOu404(id);
         reservationRepository.delete(reservation);
+    }
+
+    /**
+     * Passe en EXPIREE les réservations actives dont dateExpiration est dépassée.
+     */
+    @Transactional
+    @Scheduled(fixedRate = 60000)
+    public int expirerReservationsDepassees() {
+        List<Reservation> aExpirer = reservationRepository
+                .findByStatutInAndDateExpirationBefore(STATUTS_ACTIFS, LocalDateTime.now());
+        for (Reservation reservation : aExpirer) {
+            reservation.setStatut(ReservationStatut.EXPIREE);
+        }
+        if (!aExpirer.isEmpty()) {
+            reservationRepository.saveAll(aExpirer);
+        }
+        return aExpirer.size();
     }
 
     private Reservation trouverOu404(Integer id) {

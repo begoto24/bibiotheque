@@ -53,6 +53,15 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.lister(statut, adherentId));
     }
 
+    @GetMapping("/expirees")
+    @Operation(summary = "Lister les réservations expirées")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Liste des réservations au statut EXPIREE")
+    })
+    public ResponseEntity<List<ReservationResponseDTO>> listerExpirees() {
+        return ResponseEntity.ok(reservationService.listerExpirees());
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Consulter une réservation")
     @ApiResponses({
