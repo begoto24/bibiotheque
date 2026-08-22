@@ -25,12 +25,6 @@ import java.util.stream.Collectors;
 @Service
 public class ReservationService {
 
-    private static final List<ReservationStatut> STATUTS_ACTIFS =
-            Arrays.asList(ReservationStatut.EN_ATTENTE, ReservationStatut.DISPONIBLE);
-
-    private static final List<ReservationStatut> STATUTS_TERMINAUX =
-            Arrays.asList(ReservationStatut.ANNULEE, ReservationStatut.EXPIREE, ReservationStatut.HONOREE);
-
     @Autowired
     private ReservationRepository reservationRepository;
 
@@ -44,38 +38,37 @@ public class ReservationService {
         expirerReservationsDepassees();
 
         if (request.getLivreId() == null) {
-            throw new BadRequestException("livreId manquant");
+            throw new BadRequestException("livreId is required");
         }
         if (request.getAdherentId() == null) {
-            throw new BadRequestException("adherentId manquant");
+            throw new BadRequestException("adherentId is required");
         }
 
         Books livre = booksRepository.findById(request.getLivreId())
                 .orElseThrow(() -> new NotFoundException(
-                        "Livre avec id " + request.getLivreId() + " introuvable."));
+                        "Book with id " + request.getLivreId() + " not found."));
         Users adherent = usersRepository.findById(request.getAdherentId())
                 .orElseThrow(() -> new NotFoundException(
-                        "Adhérent avec id " + request.getAdherentId() + " introuvable."));
+                        "User with id " + request.getAdherentId() + " not found."));
 
-        // RG-01 : on ne peut réserver qu'un livre indisponible
         if (livre.getNoOfCopies() != null && livre.getNoOfCopies() > 0) {
             throw new ConflictException(
-                    "RG-01 : on ne peut réserver qu'un livre indisponible.");
+                    "RG-01: reservation is only allowed for unavailable books.");
         }
 
-        // RG-02 : une seule réservation active sur un même livre
         if (reservationRepository.existsByAdherent_UserIdAndLivre_BookIdAndStatutIn(
-                adherent.getUserId(), livre.getBookId(), STATUTS_ACTIFS)) {
+                adherent.getUserId(), livre.getBookId(),
+                Arrays.asList(ReservationStatut.EN_ATTENTE, ReservationStatut.DISPONIBLE))) {
             throw new ConflictException(
-                    "RG-02 : un adhérent ne peut avoir qu'une seule réservation active sur un même livre.");
+                    "RG-02: an adherent can only have one active reservation per book.");
         }
 
-        // RG-03 : max 3 réservations actives
         long actives = reservationRepository.countByAdherent_UserIdAndStatutIn(
-                adherent.getUserId(), STATUTS_ACTIFS);
+                adherent.getUserId(),
+                Arrays.asList(ReservationStatut.EN_ATTENTE, ReservationStatut.DISPONIBLE));
         if (actives >= 3) {
             throw new ConflictException(
-                    "RG-03 : un adhérent ne peut pas dépasser 3 réservations actives simultanées.");
+                    "RG-03: an adherent cannot exceed 3 active reservations.");
         }
 
         LocalDateTime maintenant = LocalDateTime.now();
@@ -83,7 +76,6 @@ public class ReservationService {
         reservation.setLivre(livre);
         reservation.setAdherent(adherent);
         reservation.setDateReservation(maintenant);
-        // RG-04
         reservation.setDateExpiration(maintenant.plusDays(7));
         reservation.setStatut(ReservationStatut.EN_ATTENTE);
 
@@ -91,8 +83,6 @@ public class ReservationService {
     }
 
     public List<ReservationResponseDTO> lister(ReservationStatut statut, Integer adherentId) {
-        expirerReservationsDepassees();
-
         List<Reservation> reservations;
         if (statut != null && adherentId != null) {
             reservations = reservationRepository.findByStatutAndAdherent_UserId(statut, adherentId);
@@ -107,32 +97,28 @@ public class ReservationService {
     }
 
     public List<ReservationResponseDTO> listerExpirees() {
-        expirerReservationsDepassees();
         return reservationRepository.findByStatut(ReservationStatut.EXPIREE).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     public ReservationResponseDTO consulter(Integer id) {
-        expirerReservationsDepassees();
         return toDto(trouverOu404(id));
     }
 
     public ReservationResponseDTO annuler(Integer id) {
-        expirerReservationsDepassees();
         Reservation reservation = trouverOu404(id);
 
-        // RG-06 : états terminaux non modifiables
-        if (STATUTS_TERMINAUX.contains(reservation.getStatut())) {
+        if (Arrays.asList(ReservationStatut.ANNULEE, ReservationStatut.EXPIREE, ReservationStatut.HONOREE)
+                .contains(reservation.getStatut())) {
             throw new ConflictException(
-                    "RG-06 : une réservation " + reservation.getStatut()
-                            + " ne peut plus changer d'état.");
+                    "RG-06: a reservation with status " + reservation.getStatut() + " cannot be changed.");
         }
 
-        // RG-05 : annulation seulement si EN_ATTENTE ou DISPONIBLE
-        if (!STATUTS_ACTIFS.contains(reservation.getStatut())) {
+        if (!Arrays.asList(ReservationStatut.EN_ATTENTE, ReservationStatut.DISPONIBLE)
+                .contains(reservation.getStatut())) {
             throw new ConflictException(
-                    "RG-05 : une réservation ne peut être annulée que si son statut est EN_ATTENTE ou DISPONIBLE.");
+                    "RG-05: a reservation can only be cancelled if its status is EN_ATTENTE or DISPONIBLE.");
         }
 
         reservation.setStatut(ReservationStatut.ANNULEE);
@@ -144,37 +130,35 @@ public class ReservationService {
         reservationRepository.delete(reservation);
     }
 
-    /**
-     * Passe en EXPIREE les réservations actives dont dateExpiration est dépassée.
-     */
     @Transactional
     @Scheduled(fixedRate = 60000)
-    public int expirerReservationsDepassees() {
+    public void expirerReservationsDepassees() {
         List<Reservation> aExpirer = reservationRepository
-                .findByStatutInAndDateExpirationBefore(STATUTS_ACTIFS, LocalDateTime.now());
+                .findByStatutInAndDateExpirationBefore(
+                        Arrays.asList(ReservationStatut.EN_ATTENTE, ReservationStatut.DISPONIBLE),
+                        LocalDateTime.now());
         for (Reservation reservation : aExpirer) {
             reservation.setStatut(ReservationStatut.EXPIREE);
         }
         if (!aExpirer.isEmpty()) {
             reservationRepository.saveAll(aExpirer);
         }
-        return aExpirer.size();
     }
 
     private Reservation trouverOu404(Integer id) {
         return reservationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(
-                        "Réservation avec id " + id + " introuvable."));
+                        "Reservation with id " + id + " not found."));
     }
 
     private ReservationResponseDTO toDto(Reservation reservation) {
-        return ReservationResponseDTO.builder()
-                .id(reservation.getId())
-                .livreId(reservation.getLivre().getBookId())
-                .adherentId(reservation.getAdherent().getUserId())
-                .dateReservation(reservation.getDateReservation())
-                .dateExpiration(reservation.getDateExpiration())
-                .statut(reservation.getStatut())
-                .build();
+        ReservationResponseDTO dto = new ReservationResponseDTO();
+        dto.setId(reservation.getId());
+        dto.setLivreId(reservation.getLivre().getBookId());
+        dto.setAdherentId(reservation.getAdherent().getUserId());
+        dto.setDateReservation(reservation.getDateReservation());
+        dto.setDateExpiration(reservation.getDateExpiration());
+        dto.setStatut(reservation.getStatut());
+        return dto;
     }
 }
