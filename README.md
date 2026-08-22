@@ -6,15 +6,16 @@
 
 [![Spring Boot](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)]()
 [![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)]()
-[![MySQL](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)]()
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)]()
 [![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white)]()
 [![Maven](https://img.shields.io/badge/apache_maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)]()
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)]()
 
 Application full-stack de gestion de bibliothèque : **Spring Boot** (API REST) +
-**Angular** (interface) + **MySQL** (persistance).
+**Angular** (interface) + **PostgreSQL** (persistance).
 
 * Deux profils : **Admin** (CRUD livres et utilisateurs) et **User** (emprunter / rendre).
+* Module **Réservation** : réserver un livre indisponible (RG-01 à RG-06).
 * Authentification par **JWT**.
 * Mots de passe chiffrés avec **BCrypt**.
 * Redirection vers une page *forbidden* si le rôle n'a pas accès à l'URL.
@@ -24,20 +25,17 @@ Application full-stack de gestion de bibliothèque : **Spring Boot** (API REST) 
 ## Sommaire
 
 1. [Prérequis](#1-prérequis)
-2. [État du dépôt : ce qui marche, ce qui ne marche pas](#2-état-du-dépôt--ce-qui-marche-ce-qui-ne-marche-pas)
-3. [Arborescence](#3-arborescence)
-4. [Démarrer le projet](#4-démarrer-le-projet)
-5. [Créer le premier compte](#5-créer-le-premier-compte)
-6. [Le trajet d'une donnée : du clic à la base](#6-le-trajet-dune-donnée--du-clic-à-la-base)
-7. [Les API](#7-les-api)
-8. [Rappel Git](#8-rappel-git)
-9. [Captures d'écran](#9-captures-décran)
+2. [Arborescence](#2-arborescence)
+3. [Démarrer le projet](#3-démarrer-le-projet)
+4. [Créer le premier compte](#4-créer-le-premier-compte)
+5. [Les API](#5-les-api)
+6. [Rappel Git](#6-rappel-git)
+7. [Captures d'écran](#7-captures-décran)
+8. [Tests des règles de gestion](#8-tests-des-règles-de-gestion-rg-01-à-rg-06)
 
 ---
 
 ## 1. Prérequis
-
-À installer **avant** la séance. Ne venez pas avec une machine vierge.
 
 | Outil | Version | Vérifier avec |
 |---|---|---|
@@ -48,40 +46,9 @@ Application full-stack de gestion de bibliothèque : **Spring Boot** (API REST) 
 | Git | quelconque | `git --version` |
 | IDE | IntelliJ IDEA / VS Code | — |
 
-Si l'une de ces commandes ne répond pas, l'outil n'est pas dans votre `PATH` :
-c'est à régler avant 8h30, pas pendant l'exercice.
-
 ---
 
-## 2. État du dépôt : ce qui marche, ce qui ne marche pas
-
-Ce dépôt est un projet **réel et daté**. Il ne se lance pas tout seul sur une
-machine d'aujourd'hui. C'est volontaire : savoir démarrer un projet inconnu,
-c'est d'abord savoir diagnostiquer pourquoi il refuse de démarrer.
-
-### Ce qui est déjà là
-
-* Un backend Spring Boot complet : entités, repositories, contrôleurs, sécurité JWT.
-* Un frontend Angular complet : 15 composants, routage, guard, intercepteur HTTP.
-* Aucune donnée : la base est vide au premier démarrage.
-
-### Ce qui manque ou coince — c'est votre travail
-
-| Constat | Détail |
-|---|---|
-| **Le backend ne compile pas sur un JDK 17+** | `pom.xml` cible Spring Boot 2.4.5 et Java 1.8. La version de Lombok qu'il embarque ne connaît pas le compilateur des JDK récents. Sur JDK 21, le build s'arrête sur `java.lang.NoSuchFieldError: Class com.sun.tools.javac.tree.JCTree$JCImport does not have member field 'com.sun.tools.javac.tree.JCTree qualid'`. |
-| **Le frontend est en Angular 14** | `npx ng version` affiche `Node: 22.x (Unsupported)`. Le build passe malgré tout, mais vous êtes hors du support officiel. |
-| **Aucun fichier Docker** | Pas de `Dockerfile`, pas de `docker-compose.yml`. La consigne « lancer avec `docker compose up` » suppose que vous les écriviez. |
-| **La base doit exister à la main** | `application.properties` pointe sur `jdbc:mysql://localhost:3306/bibliotheque` avec `root` / `mysql`. Le schéma `bibliotheque` n'est créé par personne. |
-| **Aucun compte de départ** | `POST /admin/users` est protégé : impossible de créer le premier administrateur via l'API. Voir la [section 5](#5-créer-le-premier-compte). |
-| **L'URL de l'API est en dur** | `http://localhost:8080` est écrit dans les trois services Angular, pas dans `environment.ts`. |
-
-> Ne « corrigez » rien avant qu'on en parle en séance : ces points sont les
-> exercices, pas des bugs à masquer.
-
----
-
-## 3. Arborescence
+## 2. Arborescence
 
 ```
 bibliothèque/
@@ -96,29 +63,40 @@ bibliothèque/
 │       │   │   ├── Users.java          un utilisateur, lié à des Role
 │       │   │   ├── Role.java           "Admin" ou "User"
 │       │   │   ├── Borrow.java         un emprunt (dates emprunt / retour)
+│       │   │   ├── Reservation.java    une réservation (statut, dates)
+│       │   │   ├── ReservationStatut.java  enum : EN_ATTENTE, DISPONIBLE, ANNULEE, EXPIREE, HONOREE
 │       │   │   ├── JwtRequest.java     corps du POST /authenticate
 │       │   │   ├── JwtResponse.java    réponse : utilisateur + token
 │       │   │   └── JsonDataSerializer.java  formate les dates en dd-MM-yyyy
 │       │   ├── dao/                accès base — Spring Data JPA
 │       │   │   ├── BooksRepository.java
 │       │   │   ├── UsersRepository.java     findByUsername
-│       │   │   └── BorrowRepository.java    findByUserId, findByBookId
+│       │   │   ├── BorrowRepository.java    findByUserId, findByBookId
+│       │   │   └── ReservationRepository.java
 │       │   ├── controller/         les points d'entrée HTTP
 │       │   │   ├── BooksController.java     /admin/books
 │       │   │   ├── AdminController.java     /admin/users
 │       │   │   ├── BorrowController.java    /borrow
-│       │   │   └── JwtController.java       /authenticate
+│       │   │   ├── JwtController.java       /authenticate
+│       │   │   └── ReservationController.java  /api/reservations
 │       │   ├── service/
-│       │   │   └── JwtService.java     vérifie le couple login / mot de passe
+│       │   │   ├── JwtService.java     vérifie le couple login / mot de passe
+│       │   │   └── ReservationService.java  logique métier réservation (RG-01 à RG-06)
+│       │   ├── dto/
+│       │   │   ├── ReservationRequestDTO.java
+│       │   │   └── ReservationResponseDTO.java
+│       │   ├── exceptions/
+│       │   │   ├── NotFoundException.java     -> HTTP 404
+│       │   │   ├── ConflictException.java    -> HTTP 409
+│       │   │   └── BadRequestException.java  -> HTTP 400
 │       │   ├── configuration/
 │       │   │   ├── WebSecurityConfiguration.java     qui a le droit d'aller où
 │       │   │   ├── JwtRequestFilter.java             lit le header Authorization
 │       │   │   ├── JwtAuthenticationEntryPoint.java  renvoie 401
 │       │   │   └── CorsConfiguration.java            autorise le front
-│       │   ├── util/JwtUtil.java       fabrique et valide les tokens
-│       │   └── exceptions/NotFoundException.java     -> HTTP 404
+│       │   └── util/JwtUtil.java       fabrique et valide les tokens
 │       ├── main/resources/application.properties     port, URL base, identifiants
-│       └── test/java/...           un seul test : le contexte démarre-t-il ?
+│       └── test/java/...           tests unitaires
 │
 ├── bibliotheque-frontend/          interface Angular — port 4200
 │   ├── package.json                dépendances npm + scripts
@@ -140,9 +118,11 @@ bibliothèque/
 │           │   └── auth.interceptor.ts   ajoute "Bearer <token>" partout
 │           └── <15 composants>/    un dossier par écran (html / css / ts / spec)
 │
-├── screenshots/                    captures utilisées plus bas
-├── SEANCE-1.md                     déroulé de la séance
-└── EPREUVE-SEANCE-1.md             l'épreuve à rendre
+├── docker/
+│   └── init/
+│       └── 01-create-db.sql        crée la base au premier démarrage Docker
+├── docker-compose.yml              PostgreSQL 16 (port 5432)
+└── screenshots/                    captures utilisées plus bas
 ```
 
 **La règle à retenir** : côté backend, un dossier = une responsabilité
@@ -152,23 +132,29 @@ Côté frontend, un dossier = un écran, et tout ce qui parle au réseau vit dan
 
 ---
 
-## 4. Démarrer le projet
+## 3. Démarrer le projet
 
-### 4.1 La base de données
+### 3.1 La base de données
 
-Le backend ne crée pas le schéma, seulement les tables. Il faut donc :
+Lancez PostgreSQL avec Docker :
 
-```sql
-CREATE DATABASE bibliotheque;
+```bash
+docker compose up -d
 ```
 
+Le schéma `KAFOKAMLybrery48` est créé automatiquement par
+`docker/init/01-create-db.sql`.
+
 Les identifiants attendus sont dans
-[`application.properties`](bibliotheque-backend/src/main/resources/application.properties) :
-utilisateur `root`, mot de passe `mysql`, port `3306`. Adaptez le fichier à
-votre installation **ou** votre installation au fichier — mais sachez lequel
+`bibliotheque-backend/src/main/resources/application.properties` :
+utilisateur `postgres`, mot de passe `postgres`, port `5432`. Adaptez le fichier
+à votre installation **ou** votre installation au fichier — mais sachez lequel
 des deux vous avez fait.
 
-### 4.2 Le backend
+> Si vous avez PostgreSQL installé en local, vous pouvez aussi créer la base
+> manuellement et lancer le backend sans Docker.
+
+### 3.2 Le backend
 
 ```bash
 cd bibliotheque-backend
@@ -179,18 +165,13 @@ Au démarrage, `spring.jpa.hibernate.ddl-auto=update` demande à Hibernate de
 créer les tables manquantes. Vérifiez-le tout de suite :
 
 ```sql
-USE bibliotheque;
+USE "KAFOKAMLybrery48";
 SHOW TABLES;
-DESCRIBE books;
 ```
-
-> Si Maven s'arrête sur `NoSuchFieldError ... JCTree$JCImport`, vous compilez
-> avec un JDK trop récent pour ce projet.
-> Voir la [section 2](#2-état-du-dépôt--ce-qui-marche-ce-qui-ne-marche-pas).
 
 L'API écoute sur **http://localhost:8080**.
 
-### 4.3 Le frontend
+### 3.3 Le frontend
 
 ```bash
 cd bibliotheque-frontend
@@ -201,9 +182,15 @@ npm start                       # équivaut à : ng serve
 L'interface est sur **http://localhost:4200**. Elle appelle le backend sur le
 port 8080 : les deux doivent tourner en même temps.
 
+### 3.4 Vérification
+
+1. Le backend affiche `Started BibliothequeApplication` dans sa console.
+2. Ouvrir **http://localhost:4200** : la page d'accueil / de connexion s'affiche.
+3. Se connecter avec `admin` / `admin123` (voir section suivante).
+
 ---
 
-## 5. Créer le premier compte
+## 4. Créer le premier compte
 
 Il n'y a aucun utilisateur en base, et `POST /admin/users` exige déjà un token.
 Le premier administrateur s'insère donc directement en SQL, **après** le premier
@@ -214,11 +201,7 @@ déclare un `BCryptPasswordEncoder`, il n'acceptera jamais un mot de passe en
 clair. Le hachage ci-dessous correspond à `admin123`.
 
 ```sql
-USE bibliotheque;
-
 -- 1. Regardez d'abord ce qu'Hibernate a réellement créé.
---    Les noms ci-dessous suivent la convention Spring Boot
---    (camelCase -> snake_case), mais vérifiez-les, ne les supposez pas.
 SHOW TABLES;
 DESCRIBE users;
 DESCRIBE role;
@@ -234,14 +217,13 @@ INSERT INTO user_role (user_id, role_id)
 VALUES (1, (SELECT role_id FROM role WHERE role_name = 'Admin'));
 
 -- 3. Si une table hibernate_sequence existe, avancez son compteur au-delà
---    des identifiants que vous venez de poser à la main, sinon la prochaine
---    création depuis l'application entrera en collision.
+--    des identifiants que vous venez de poser à la main.
 UPDATE hibernate_sequence SET next_val = 100 WHERE next_val < 100;
 ```
 
 Connexion : **admin / admin123**.
 
-Vérification en ligne de commande, sans passer par le navigateur :
+Vérification en ligne de commande :
 
 ```bash
 curl -X POST http://localhost:8080/authenticate \
@@ -258,38 +240,7 @@ curl http://localhost:8080/admin/users -H "Authorization: Bearer <le_token>"
 
 ---
 
-## 6. Le trajet d'une donnée : du clic à la base
-
-C'est l'objectif de la séance. Prenons **la création d'un livre** et suivons-la
-couche par couche. Ouvrez les fichiers au fur et à mesure : ne lisez pas ce
-tableau passivement.
-
-| # | Où | Fichier | Ce qui se passe |
-|---|---|---|---|
-| 1 | Navigateur | [`create-book.component.html`](bibliotheque-frontend/src/app/create-book/create-book.component.html) | Vous remplissez le formulaire. `[(ngModel)]` recopie chaque champ dans l'objet `book` au fil de la frappe. |
-| 2 | Navigateur | [`create-book.component.ts`](bibliotheque-frontend/src/app/create-book/create-book.component.ts) | Le clic déclenche `onSubmit()` → `saveBook()` → `booksService.createBook(this.book)`. |
-| 3 | Navigateur | [`books.service.ts`](bibliotheque-frontend/src/app/_service/books.service.ts) | Traduit l'appel en `POST http://localhost:8080/admin/books`, objet sérialisé en JSON. |
-| 4 | Navigateur | [`auth.interceptor.ts`](bibliotheque-frontend/src/app/_auth/auth.interceptor.ts) | **Toute** requête sortante passe ici : il ajoute l'en-tête `Authorization: Bearer <token>`. C'est lui aussi qui redirige vers `/login` sur un 401 et vers `/forbidden` sur un 403. |
-| 5 | Réseau | — | La requête quitte le navigateur. Ouvrez l'onglet *Réseau* des DevTools : vous devez voir le POST, son corps et son en-tête. |
-| 6 | Backend | [`CorsConfiguration.java`](bibliotheque-backend/src/main/java/com/ibizabroker/bibliotheque/configuration/CorsConfiguration.java) | Le port 4200 n'est pas le port 8080 : sans cette autorisation CORS, le navigateur refuserait la réponse. |
-| 7 | Backend | [`JwtRequestFilter.java`](bibliotheque-backend/src/main/java/com/ibizabroker/bibliotheque/configuration/JwtRequestFilter.java) | Extrait le token du header, en tire le `username`, recharge l'utilisateur et le pose dans le `SecurityContext`. Filtre exécuté **avant** tout contrôleur. |
-| 8 | Backend | [`WebSecurityConfiguration.java`](bibliotheque-backend/src/main/java/com/ibizabroker/bibliotheque/configuration/WebSecurityConfiguration.java) | Décide si la requête a le droit de continuer. Sans authentification valide → 401 émis par `JwtAuthenticationEntryPoint`. |
-| 9 | Backend | [`BooksController.java`](bibliotheque-backend/src/main/java/com/ibizabroker/bibliotheque/controller/BooksController.java) | `@PostMapping("/books")` reçoit le JSON, `@RequestBody` le transforme en objet `Books`. `@PreAuthorize("hasRole('Admin')")` refuse si le rôle ne colle pas → 403. |
-| 10 | Backend | [`BooksRepository.java`](bibliotheque-backend/src/main/java/com/ibizabroker/bibliotheque/dao/BooksRepository.java) | `save(book)`. L'interface est vide : Spring Data en génère l'implémentation au démarrage. |
-| 11 | Backend | [`Books.java`](bibliotheque-backend/src/main/java/com/ibizabroker/bibliotheque/entity/Books.java) | `@Entity` / `@Table(name = "Books")` : c'est cette classe qui dit à Hibernate quelle table et quelles colonnes viser. |
-| 12 | Base | MySQL | Hibernate émet l'`INSERT`. `spring.jpa.show-sql=true` l'affiche dans la console : lisez-le, c'est la preuve que le trajet est complet. |
-| 13 | Retour | — | L'objet sauvegardé (avec son `bookId`) repart en JSON, le `subscribe()` de l'étape 2 se déclenche et route vers `/books`. |
-
-Le même trajet vaut pour la lecture, la modification et la suppression : seuls
-le verbe HTTP et la méthode du repository changent.
-
-**Exercice de lecture** : refaites ce tableau, seul, pour l'emprunt d'un livre
-(`borrow-book` → `BorrowController`). Vous y trouverez une différence notable :
-le contrôleur y modifie **deux** tables.
-
----
-
-## 7. Les API
+## 5. Les API
 
 Base : `http://localhost:8080`
 
@@ -352,11 +303,40 @@ Base : `http://localhost:8080`
 { "bookId": 3, "userId": 5 }
 ```
 
+### Réservations — `/api/reservations`
+
+| Verbe | URL | Description |
+|---|---|---|
+| POST | `/api/reservations` | Créer une réservation (livre doit être indisponible) |
+| GET | `/api/reservations` | Lister les réservations (filtrable par `statut` et `adherentId`) |
+| GET | `/api/reservations/expirees` | Lister les réservations expirées |
+| GET | `/api/reservations/{id}` | Consulter une réservation |
+| PATCH | `/api/reservations/{id}/annuler` | Annuler une réservation |
+| DELETE | `/api/reservations/{id}` | Supprimer une réservation |
+
+**Règles métier (RG-01 à RG-06) :**
+
+| RG | Règle |
+|---|---|
+| RG-01 | On ne peut réserver qu'un livre indisponible (`noOfCopies == 0`) |
+| RG-02 | Un adhérent ne peut avoir qu'une seule réservation active sur un même livre |
+| RG-03 | Un adhérent ne peut pas dépasser 3 réservations actives simultanées |
+| RG-04 | Les réservations expirent après 7 jours |
+| RG-05 | L'annulation est possible seulement si le statut est `EN_ATTENTE` ou `DISPONIBLE` |
+| RG-06 | Les statuts terminaux (`ANNULEE`, `EXPIREE`, `HONOREE`) ne peuvent plus changer |
+
+**Flux des statuts :**
+`EN_ATTENTE` → `DISPONIBLE` → `HONOREE` | `ANNULEE` | `EXPIREE`
+
+```json
+{ "livreId": 3, "adherentId": 5 }
+```
+
 ---
 
-## 8. Rappel Git
+## 6. Rappel Git
 
-Le cycle complet, dans l'ordre, à savoir refaire sans regarder :
+Le cycle complet, dans l'ordre :
 
 ```bash
 # 1. Partir d'une base à jour
@@ -393,7 +373,7 @@ Quelques réflexes :
 
 ---
 
-## 9. Captures d'écran
+## 7. Captures d'écran
 
 ### Accueil et connexion
 
@@ -419,3 +399,85 @@ Quelques réflexes :
 | Emprunter | ![Emprunter](./screenshots/borrow_book.png) |
 | Rendre | ![Rendre](./screenshots/return_book.png) |
 | Accès refusé | ![Forbidden](./screenshots/forbidden.png) |
+
+---
+
+## 8. Tests des règles de gestion (RG-01 à RG-06)
+
+Tests réalisés via Swagger UI (`http://localhost:8080/swagger-ui.html`).
+Chaque test est documenté avec la requête, le résultat attendu et la capture.
+
+### Données de test
+
+| Réf. | Type | ID | Détails |
+|---|---|---|---|
+| L1 | Livre disponible | bookId: 107 | `noOfCopies: 3` |
+| L2 | Livre emprunté | bookId: 108 | `noOfCopies: 0` |
+| L3 | Livre emprunté | bookId: 109 | `noOfCopies: 0` |
+| L4 | Livre emprunté | bookId: 110 | `noOfCopies: 0` |
+| L5 | Livre emprunté | bookId: 111 | `noOfCopies: 0` |
+| A1 | Réservataire principal | userId: 112 | username: `a1_reservataire` |
+| A2 | Saturation quota | userId: 113 | username: `a2_quota` |
+| A3 | Emprunteur L2-L5 | userId: 114 | username: `a3_emprunteur` |
+
+### Préparation
+
+1. Ouvrir Swagger : `http://localhost:8080/swagger-ui.html`
+2. S'authentifier via `POST /authenticate` avec `admin` / `admin123`
+3. Copier le `jwtToken` → cliquer **Authorize** → coller le token
+
+### RG-01 — Réserver un livre disponible (interdit)
+
+| | |
+|---|---|
+| **Requête** | `POST /api/reservations` |
+| **Body** | `{ "livreId": 107, "adherentId": 112 }` |
+| **Résultat** | **409** — `RG-01: reservation is only allowed for unavailable books.` |
+| **Capture** | `screenshots/rg-01.png` |
+
+### RG-02 — Deux réservations actives sur même livre (interdit)
+
+| | |
+|---|---|
+| **1ère requête** | `POST /api/reservations` — `{ "livreId": 108, "adherentId": 112 }` → **201** (réservation créée, id retourné) |
+| **2ème requête** | `POST /api/reservations` — `{ "livreId": 108, "adherentId": 112 }` |
+| **Résultat** | **409** — `RG-02: an adherent can only have one active reservation per book.` |
+| **Capture** | `screenshots/rg-02.png` |
+
+### RG-03 — Saturer le quota de 3 réservations
+
+| # | Body | Résultat |
+|---|---|---|
+| 1 | `{ "livreId": 109, "adherentId": 113 }` | 201 ✅ |
+| 2 | `{ "livreId": 110, "adherentId": 113 }` | 201 ✅ |
+| 3 | `{ "livreId": 111, "adherentId": 113 }` | 201 ✅ |
+| 4 | `{ "livreId": 101, "adherentId": 113 }` | **409** ❌ |
+
+| | |
+|---|---|
+| **Résultat (4ème)** | **409** — `RG-03: an adherent cannot exceed 3 active reservations.` |
+| **Capture** | `screenshots/rg-03.png` |
+
+### RG-04 — Vérifier dateExpiration = dateReservation + 7 jours
+
+| | |
+|---|---|
+| **Requête** | `GET /api/reservations/{id}` (id de la réservation créée au test RG-02) |
+| **Résultat** | **200** — `dateExpiration` = `dateReservation` + 7 jours |
+| **Capture** | `screenshots/rg-04.png` |
+
+### RG-05 — Annuler une réservation EN_ATTENTE
+
+| | |
+|---|---|
+| **Requête** | `PATCH /api/reservations/{id}/annuler` (même id que RG-02) |
+| **Résultat** | **200** — `statut: "ANNULEE"` |
+| **Capture** | `screenshots/rg-05.png` |
+
+### RG-06 — Annuler une réservation déjà ANNULEE (interdit)
+
+| | |
+|---|---|
+| **Requête** | `PATCH /api/reservations/{id}/annuler` (même id) |
+| **Résultat** | **409** — `RG-06: a reservation with status ANNULEE cannot be changed.` |
+| **Capture** | `screenshots/rg-06.png` |
