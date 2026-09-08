@@ -1,3 +1,96 @@
-<div class="container">
-    <p class="home">Welcome to Online Library System</p>
-</div>
+<main class="page-shell dashboard fade-in" *ngIf="isAdmin(); else publicHome">
+  <div class="page-header">
+    <h2 class="page-title"><i class="fas fa-gauge-high" aria-hidden="true"></i> Tableau de bord</h2>
+    <p class="page-subtitle">Vue d'ensemble de la bibliothèque.</p>
+  </div>
+
+  <div *ngIf="statsError" class="alert alert-danger">
+    <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ statsError }}
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span class="stat-icon stat-icon--primary"><i class="fas fa-book" aria-hidden="true"></i></span>
+      <div class="stat-body">
+        <span class="stat-value" *ngIf="!loadingStats">{{ stats.books }}</span>
+        <app-skeleton *ngIf="loadingStats" shape="text" width="52px" height="28px"></app-skeleton>
+        <span class="stat-label">Livres au catalogue</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-icon stat-icon--accent"><i class="fas fa-users" aria-hidden="true"></i></span>
+      <div class="stat-body">
+        <span class="stat-value" *ngIf="!loadingStats">{{ stats.users }}</span>
+        <app-skeleton *ngIf="loadingStats" shape="text" width="52px" height="28px"></app-skeleton>
+        <span class="stat-label">Utilisateurs inscrits</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-icon stat-icon--warning"><i class="fas fa-calendar-check" aria-hidden="true"></i></span>
+      <div class="stat-body">
+        <span class="stat-value" *ngIf="!loadingStats">{{ stats.pendingReservations }}</span>
+        <app-skeleton *ngIf="loadingStats" shape="text" width="52px" height="28px"></app-skeleton>
+        <span class="stat-label">Réservations en attente</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-icon stat-icon--success"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i></span>
+      <div class="stat-body">
+        <span class="stat-value" *ngIf="!loadingStats">{{ stats.activeBorrows }}</span>
+        <app-skeleton *ngIf="loadingStats" shape="text" width="52px" height="28px"></app-skeleton>
+        <span class="stat-label">Emprunts en cours</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="section-title">Actions rapides</h3>
+  <div class="quick-actions">
+    <app-button variant="primary" icon="fa-book" routerLink="/books">Gérer les livres</app-button>
+    <app-button variant="secondary" icon="fa-users" routerLink="/users">Gérer les utilisateurs</app-button>
+    <app-button variant="outline" icon="fa-calendar-check" routerLink="/reservations">Voir les réservations</app-button>
+  </div>
+</main>
+
+<ng-template #publicHome>
+  <div class="home-hero">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container">
+      <div class="hero-content text-center fade-in">
+        <i class="fas fa-book-open hero-logo" aria-hidden="true"></i>
+        <h1 class="hero-title">Bienvenue à la Bibliothèque</h1>
+        <p class="hero-subtitle">
+          Gérez vos livres, emprunts, retours et réservations en toute simplicité.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" routerLink="/books">
+            <i class="fas fa-book" aria-hidden="true"></i> Explorer les livres
+          </a>
+          <a class="btn btn-outline btn-lg" routerLink="/login" *ngIf="!isLoggedIn()">
+            <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Se connecter
+          </a>
+        </div>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card card fade-in">
+          <span class="feature-icon-chip"><i class="fas fa-book feature-icon" aria-hidden="true"></i></span>
+          <h3 class="feature-title">Catalogue</h3>
+          <p class="feature-text">Consultez et gérez tous les ouvrages disponibles.</p>
+        </div>
+        <div class="feature-card card fade-in">
+          <span class="feature-icon-chip"><i class="fas fa-hand-holding-heart feature-icon" aria-hidden="true"></i></span>
+          <h3 class="feature-title">Emprunts</h3>
+          <p class="feature-text">Empruntez et suivez vos lectures en cours.</p>
+        </div>
+        <div class="feature-card card fade-in">
+          <span class="feature-icon-chip"><i class="fas fa-calendar-check feature-icon" aria-hidden="true"></i></span>
+          <h3 class="feature-title">Réservations</h3>
+          <p class="feature-text">Réservez vos livres et gérez les disponibilités.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

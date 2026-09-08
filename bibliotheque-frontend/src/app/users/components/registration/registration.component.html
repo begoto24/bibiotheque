@@ -1,0 +1,78 @@
+<app-button variant="primary" icon="fa-user-plus" (clicked)="openModal()">Ajouter un utilisateur</app-button>
+
+<div
+  *ngIf="isModalOpen"
+  class="modal-backdrop"
+  role="presentation"
+  (click)="closeModal()">
+  <form
+    class="modal-card fade-in"
+    #userForm="ngForm"
+    (ngSubmit)="onSubmit(userForm)"
+    autocomplete="off"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="createUserModalTitle"
+    tabindex="-1"
+    (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title" id="createUserModalTitle">
+        <i class="fas fa-user-plus" aria-hidden="true"></i> Ajouter un utilisateur
+      </h3>
+      <button type="button" class="modal-close" (click)="closeModal()" aria-label="Fermer">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <app-form-field label="Nom" icon="fa-user" for="name" [invalid]="name.invalid && name.touched">
+        <input
+          type="text"
+          class="form-control"
+          [class.is-invalid]="name.invalid && name.touched"
+          id="name"
+          [(ngModel)]="user.name"
+          name="name"
+          required
+          #name="ngModel">
+      </app-form-field>
+
+      <app-form-field label="Username" icon="fa-at" for="username" [invalid]="username.invalid && username.touched">
+        <input
+          type="text"
+          class="form-control"
+          [class.is-invalid]="username.invalid && username.touched"
+          id="username"
+          [(ngModel)]="user.username"
+          name="username"
+          required
+          #username="ngModel">
+      </app-form-field>
+
+      <app-form-field label="Mot de passe" icon="fa-lock" for="password" [invalid]="password.invalid && password.touched">
+        <input
+          type="password"
+          class="form-control"
+          [class.is-invalid]="password.invalid && password.touched"
+          id="password"
+          [(ngModel)]="user.password"
+          name="password"
+          required
+          #password="ngModel">
+      </app-form-field>
+
+      <app-form-field label="Rôle" icon="fa-user-tag" for="role">
+        <app-select id="role" [options]="roleOptions" [(ngModel)]="user.role[0].roleName" name="role"></app-select>
+      </app-form-field>
+
+      <div *ngIf="error" class="alert alert-danger mb-0">
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <app-button variant="outline" type="button" (clicked)="closeModal()">Annuler</app-button>
+      <app-button variant="success" type="submit" icon="fa-save" [loading]="submitting" loadingText="Enregistrement...">Enregistrer</app-button>
+    </div>
+  </form>
+</div>

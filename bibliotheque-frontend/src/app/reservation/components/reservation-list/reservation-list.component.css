@@ -1,0 +1,11 @@
+/* Les états chargement/erreur/vide sont désormais gérés par
+   <app-table-state> (styles centralisés dans styles.css). Il ne reste
+   ici que ce qui est spécifique aux données de cette liste. */
+.reservation-list {
+  min-height: 200px;
+}
+
+.cell-strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}

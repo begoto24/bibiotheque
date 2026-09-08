@@ -1,0 +1,26 @@
+<div class="app-select" [class.app-select--open]="isOpen" [class.app-select--up]="openUpward">
+  <button
+    type="button"
+    class="form-select app-select-trigger"
+    [class.is-invalid]="invalid"
+    [id]="id"
+    [disabled]="disabled"
+    aria-haspopup="listbox"
+    [attr.aria-expanded]="isOpen"
+    (click)="toggle()">
+    <span class="app-select-value" [class.app-select-placeholder]="!hasValue">{{ selectedLabel }}</span>
+    <i class="fas fa-chevron-down app-select-caret" aria-hidden="true"></i>
+  </button>
+
+  <ul class="app-select-menu" role="listbox" *ngIf="isOpen">
+    <li
+      *ngFor="let option of options"
+      role="option"
+      class="app-select-option"
+      [class.active]="isSelected(option)"
+      [attr.aria-selected]="isSelected(option)"
+      (click)="selectOption(option)">
+      {{ option.label }}
+    </li>
+  </ul>
+</div>

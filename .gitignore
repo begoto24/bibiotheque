@@ -1,2 +1,8 @@
-# Réglages locaux des outils
-.claude/
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.iml
+.vscode/

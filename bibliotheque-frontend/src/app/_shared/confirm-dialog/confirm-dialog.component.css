@@ -1,0 +1,90 @@
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(45, 52, 54, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  z-index: 1055;
+  animation: backdrop-in 0.3s ease both;
+}
+
+.dialog-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-xl);
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  animation: dialog-in 0.3s ease both;
+}
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.dialog-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(143, 162, 131, 0.15);
+  color: var(--accent-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-md);
+  font-size: 1.4rem;
+}
+
+.dialog-icon--danger {
+  background: rgba(231, 76, 60, 0.12);
+  color: var(--danger);
+}
+
+.dialog-title {
+  margin-bottom: var(--spacing-sm);
+  font-size: 1.25rem;
+}
+
+.dialog-message {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.dialog-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+}
+
+.dialog-actions .btn {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .dialog-card {
+    padding: var(--spacing-lg);
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog-backdrop,
+  .dialog-card {
+    animation-duration: 0.001ms !important;
+  }
+}

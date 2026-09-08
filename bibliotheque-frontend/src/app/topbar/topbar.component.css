@@ -1,0 +1,100 @@
+/* Caché par défaut : sur mobile, la sidebar en tiroir porte déjà le profil
+   et la déconnexion, pas besoin de les dupliquer dans une seconde barre. */
+.topbar {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .topbar {
+    align-items: center;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: var(--spacing-lg);
+    justify-content: space-between;
+    min-height: 76px;
+    padding: var(--spacing-md) var(--spacing-xl);
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+  }
+}
+
+.topbar-search {
+  align-items: center;
+  background: var(--bg-body);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  display: flex;
+  gap: var(--spacing-sm);
+  max-width: 440px;
+  min-height: 46px;
+  padding: 10px var(--spacing-lg);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  width: 100%;
+}
+
+.topbar-search:focus-within {
+  border-color: var(--accent-dark);
+  box-shadow: 0 0 0 0.2rem rgba(117, 138, 106, 0.22);
+}
+
+.topbar-search i {
+  color: var(--text-secondary);
+}
+
+.topbar-search-input {
+  background: transparent;
+  border: 0;
+  color: var(--text-primary);
+  flex: 1;
+  font-size: 0.9rem;
+  min-width: 0;
+  outline: none;
+}
+
+.topbar-search-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.topbar-profile {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--spacing-sm);
+}
+
+.profile-chip {
+  align-items: center;
+  color: var(--text-primary);
+  display: inline-flex;
+  font-size: 0.98rem;
+  font-weight: 600;
+  gap: var(--spacing-sm);
+  white-space: nowrap;
+}
+
+.profile-chip i {
+  color: var(--accent-dark);
+  font-size: 1.6rem;
+}
+
+.logout-btn {
+  align-items: center;
+  background: transparent;
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  border-radius: 999px;
+  color: var(--danger);
+  display: inline-flex;
+  font-size: 0.88rem;
+  font-weight: 600;
+  gap: 6px;
+  min-height: 42px;
+  padding: 8px 18px;
+  transition: background-color var(--transition), color var(--transition);
+  white-space: nowrap;
+}
+
+.logout-btn:hover {
+  background: rgba(231, 76, 60, 0.1);
+}

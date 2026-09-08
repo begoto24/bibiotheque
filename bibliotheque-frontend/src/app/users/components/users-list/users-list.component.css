@@ -1,0 +1,9 @@
+.cell-strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.badge i {
+  font-size: 0.75em;
+  margin-right: 2px;
+}

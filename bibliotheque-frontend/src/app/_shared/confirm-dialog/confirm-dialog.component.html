@@ -1,0 +1,30 @@
+<div
+  *ngIf="open"
+  class="dialog-backdrop"
+  role="presentation"
+  (click)="onBackdropClick()">
+  <div
+    class="dialog-card"
+    [ngClass]="{ 'dialog-card--danger': variant === 'danger' }"
+    role="alertdialog"
+    aria-modal="true"
+    [attr.aria-label]="title"
+    tabindex="-1"
+    (click)="$event.stopPropagation()">
+    <div class="dialog-icon" [ngClass]="{ 'dialog-icon--danger': variant === 'danger' }">
+      <i class="fas" [ngClass]="variant === 'danger' ? 'fa-triangle-exclamation' : 'fa-circle-question'" aria-hidden="true"></i>
+    </div>
+    <h3 class="dialog-title">{{ title }}</h3>
+    <p class="dialog-message">{{ message }}</p>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-outline" (click)="onCancel()">{{ cancelLabel }}</button>
+      <button
+        type="button"
+        class="btn"
+        [ngClass]="variant === 'danger' ? 'btn-danger' : 'btn-primary'"
+        (click)="onConfirm()">
+        {{ confirmLabel }}
+      </button>
+    </div>
+  </div>
+</div>

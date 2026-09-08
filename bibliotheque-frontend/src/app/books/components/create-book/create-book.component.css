@@ -1,0 +1,6 @@
+/* Le déclencheur et la modale utilisent les classes génériques de
+   styles.css (.modal-backdrop/.modal-card/...). Rien de spécifique ici. */
+:host {
+  display: block;
+  margin-bottom: var(--spacing-lg);
+}

@@ -1,4 +1,9 @@
-<app-header></app-header>
-<div class="container" style="margin-top: 20px;">
-  <router-outlet></router-outlet>
+<div class="app-shell">
+  <app-header *ngIf="!hideShell"></app-header>
+  <div class="app-content-column">
+    <app-topbar *ngIf="!hideShell"></app-topbar>
+    <main class="app-main" [class.app-main--standalone]="hideShell">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 </div>

@@ -1,0 +1,27 @@
+# ============================================================
+# docker-compose.override.yml — surcharge du service frontend
+# pour le développement (hot-reload sur les modifications locales).
+#
+# Docker Compose fusionne automatiquement ce fichier avec
+# docker-compose.yml quand on lance simplement :
+#   docker compose up
+#
+# Pour lancer la version "production" (build figé, sans hot-reload) :
+#   docker compose -f docker-compose.yml up -d
+# ============================================================
+services:
+
+  frontend:
+    build:
+      context: ./bibliotheque-frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "4200:4200"     # ng serve écoute sur 4200 (au lieu du 80 de Nginx)
+    volumes:
+      # Synchronise le code source local -> conteneur (hot-reload)
+      - ./bibliotheque-frontend:/app
+      # Volumes anonymes : on garde le node_modules et le cache Angular
+      # construits DANS l'image (Linux), on ne les écrase pas avec ceux
+      # de l'hôte (Windows) qui pourraient être incompatibles.
+      - /app/node_modules
+      - /app/.angular

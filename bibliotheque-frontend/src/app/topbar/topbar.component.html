@@ -1,0 +1,28 @@
+<header class="topbar">
+  <div class="topbar-search">
+    <i class="fas fa-search" aria-hidden="true"></i>
+    <input
+      type="search"
+      class="topbar-search-input"
+      placeholder="Rechercher un livre, un utilisateur..."
+      [value]="searchQuery"
+      (input)="onSearchInput($any($event.target).value)"
+      aria-label="Rechercher">
+  </div>
+
+  <div class="topbar-profile" *ngIf="isLoggedIn(); else loginLink">
+    <span class="profile-chip">
+      <i class="fas fa-user-circle" aria-hidden="true"></i>
+      <span>{{ getUserName() }}</span>
+    </span>
+    <button class="logout-btn" type="button" (click)="logout()">
+      <i class="fas fa-sign-out-alt" aria-hidden="true"></i> <span>Déconnexion</span>
+    </button>
+  </div>
+
+  <ng-template #loginLink>
+    <a class="btn btn-outline btn-sm" routerLink="/login">
+      <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Connexion
+    </a>
+  </ng-template>
+</header>

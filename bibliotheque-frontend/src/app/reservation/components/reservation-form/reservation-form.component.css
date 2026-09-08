@@ -1,0 +1,32 @@
+/* Le déclencheur ("+ Nouvelle réservation") et la structure de la modale
+   (backdrop/card/header/body/footer) utilisent les classes génériques de
+   styles.css. Il ne reste ici que ce qui est spécifique à ce formulaire. */
+
+:host {
+  display: block;
+  margin-bottom: var(--spacing-lg);
+}
+
+.modal-body .form-group + .form-group {
+  margin-top: 0;
+}
+
+.modal-body .alert {
+  margin-top: var(--spacing-md);
+}
+
+/* Rappel visuel : le statut est automatique, pas un choix à la création. */
+.status-hint {
+  align-items: center;
+  background: var(--bg-muted);
+  border-radius: var(--radius-sm);
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.status-hint-text {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+}
+

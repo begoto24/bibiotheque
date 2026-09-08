@@ -1,0 +1,24 @@
+# ============================================================
+# Dockerfile.dev — bibliotheque-frontend (mode développement)
+# Lance "ng serve" avec hot-reload à l'intérieur du conteneur.
+# Le code source est monté en volume par docker-compose.override.yml,
+# donc toute modification (CSS, TS, HTML) est reflétée instantanément.
+# ============================================================
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Installation des dépendances (mise en cache tant que package*.json ne change pas)
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Le code source réel est fourni par le bind mount, pas par COPY,
+# mais on copie quand même pour que l'image fonctionne seule si besoin.
+COPY . .
+
+EXPOSE 4200
+
+# --host 0.0.0.0 : accessible depuis l'extérieur du conteneur
+# --poll 2000    : force la détection des changements de fichiers
+#                  (nécessaire pour les bind mounts sous Windows/Docker Desktop)
+CMD ["npx", "ng", "serve", "--host", "0.0.0.0", "--poll", "2000"]

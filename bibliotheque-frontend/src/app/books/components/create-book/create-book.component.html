@@ -1,0 +1,87 @@
+<app-button variant="primary" icon="fa-plus" (clicked)="openModal()">Ajouter un livre</app-button>
+
+<div
+  *ngIf="isModalOpen"
+  class="modal-backdrop"
+  role="presentation"
+  (click)="closeModal()">
+  <form
+    class="modal-card fade-in"
+    #bookForm="ngForm"
+    (ngSubmit)="onSubmit(bookForm)"
+    autocomplete="off"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="createBookModalTitle"
+    tabindex="-1"
+    (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title" id="createBookModalTitle">
+        <i class="fas fa-plus-circle" aria-hidden="true"></i> Ajouter un livre
+      </h3>
+      <button type="button" class="modal-close" (click)="closeModal()" aria-label="Fermer">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <app-form-field label="Nom du livre" icon="fa-book" for="bookName" [invalid]="bookName.invalid && bookName.touched">
+        <input
+          type="text"
+          class="form-control"
+          [class.is-invalid]="bookName.invalid && bookName.touched"
+          id="bookName"
+          [(ngModel)]="book.bookName"
+          name="bookName"
+          required
+          #bookName="ngModel">
+      </app-form-field>
+
+      <app-form-field label="Auteur" icon="fa-pen" for="bookAuthor" [invalid]="bookAuthor.invalid && bookAuthor.touched">
+        <input
+          type="text"
+          class="form-control"
+          [class.is-invalid]="bookAuthor.invalid && bookAuthor.touched"
+          id="bookAuthor"
+          [(ngModel)]="book.bookAuthor"
+          name="bookAuthor"
+          required
+          #bookAuthor="ngModel">
+      </app-form-field>
+
+      <app-form-field label="Genre" icon="fa-tags" for="bookGenre" [invalid]="bookGenre.invalid && bookGenre.touched">
+        <input
+          type="text"
+          class="form-control"
+          [class.is-invalid]="bookGenre.invalid && bookGenre.touched"
+          id="bookGenre"
+          [(ngModel)]="book.bookGenre"
+          name="bookGenre"
+          required
+          #bookGenre="ngModel">
+      </app-form-field>
+
+      <app-form-field label="Nombre de copies" icon="fa-copy" for="noOfCopies" [invalid]="noOfCopies.invalid && noOfCopies.touched">
+        <input
+          type="number"
+          min="0"
+          class="form-control"
+          [class.is-invalid]="noOfCopies.invalid && noOfCopies.touched"
+          id="noOfCopies"
+          [(ngModel)]="book.noOfCopies"
+          name="noOfCopies"
+          required
+          #noOfCopies="ngModel">
+      </app-form-field>
+
+      <div *ngIf="error" class="alert alert-danger mb-0">
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <app-button variant="outline" type="button" (clicked)="closeModal()">Annuler</app-button>
+      <app-button variant="success" type="submit" icon="fa-save" [loading]="submitting" loadingText="Enregistrement...">Enregistrer</app-button>
+    </div>
+  </form>
+</div>

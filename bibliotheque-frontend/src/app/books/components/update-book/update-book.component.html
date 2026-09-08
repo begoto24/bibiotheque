@@ -1,0 +1,43 @@
+<main class="page-shell">
+  <section class="form-card fade-in">
+    <div class="card-header">
+      <h3 class="mb-0 form-title"><span class="form-title-icon"><i class="fas fa-edit" aria-hidden="true"></i></span> Modifier le livre</h3>
+      <p class="form-subtitle">Mettez à jour les informations de cet ouvrage.</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" autocomplete="off">
+      <h4 class="form-section-title">Informations générales</h4>
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="bookName"><i class="fas fa-book" aria-hidden="true"></i> Nom du livre</label>
+          <input type="text" class="form-control" id="bookName" [(ngModel)]="book.bookName" name="bookName">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="bookAuthor"><i class="fas fa-pen" aria-hidden="true"></i> Auteur</label>
+          <input type="text" class="form-control" id="bookAuthor" [(ngModel)]="book.bookAuthor" name="bookAuthor">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="bookGenre"><i class="fas fa-tags" aria-hidden="true"></i> Genre</label>
+          <input type="text" class="form-control" id="bookGenre" [(ngModel)]="book.bookGenre" name="bookGenre">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="noOfCopies"><i class="fas fa-copy" aria-hidden="true"></i> Nombre de copies</label>
+          <input type="number" min="0" class="form-control" id="noOfCopies" [(ngModel)]="book.noOfCopies" name="noOfCopies">
+        </div>
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger mt-3">
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
+      </div>
+
+      <div class="form-actions">
+        <a class="btn btn-outline" routerLink="/books"><i class="fas fa-arrow-left" aria-hidden="true"></i> Retour</a>
+        <button class="btn btn-success" type="submit" [disabled]="submitting">
+          <span *ngIf="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+          <span *ngIf="!submitting"><i class="fas fa-save" aria-hidden="true"></i> Mettre à jour</span>
+          <span *ngIf="submitting">Mise à jour...</span>
+        </button>
+      </div>
+    </form>
+  </section>
+</main>

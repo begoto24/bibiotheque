@@ -1,32 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserAuthService } from '../_service/user-auth.service';
-import { UsersService } from '../_service/users.service';
+
+const RAIL_STORAGE_KEY = 'sidebarRailCollapsed';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
+  /** Tiroir mobile fermé (< 992px) — sans lien avec le repli desktop ci-dessous. */
+  isCollapsed = true;
+
+  /** Sidebar repliée en rail icônes seules (>= 992px), mémorisé entre les sessions. */
+  isRailCollapsed = localStorage.getItem(RAIL_STORAGE_KEY) === 'true';
 
   constructor(
-    private userAuthService: UserAuthService, 
-    private router: Router,
-    public userService: UsersService,
+    private userAuthService: UserAuthService,
+    private router: Router
   ) { }
 
-  name = this.userAuthService.getName();
-  ngOnInit(): void {
+  toggleMenu(): void {
+    this.isCollapsed = !this.isCollapsed;
   }
 
-  public isLoggedIn() {
-    console.log(this.name);
-    return this.userAuthService.isLoggedIn();
+  closeMenu(): void {
+    this.isCollapsed = true;
   }
 
-  public logout() {
+  toggleRail(): void {
+    this.isRailCollapsed = !this.isRailCollapsed;
+    localStorage.setItem(RAIL_STORAGE_KEY, String(this.isRailCollapsed));
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.userAuthService.isLoggedIn();
+  }
+
+  isAdmin(): boolean {
+    const roles: any[] = this.userAuthService.getRoles() || [];
+    return roles.some(role => role?.roleName === 'Admin' || role === 'Admin');
+  }
+
+  getUserName(): string {
+    return this.userAuthService.getName() || 'Utilisateur';
+  }
+
+  logout(): void {
     this.userAuthService.clear();
-    this.router.navigate(['/']);
+    this.closeMenu();
+    this.router.navigate(['/login']);
   }
 }

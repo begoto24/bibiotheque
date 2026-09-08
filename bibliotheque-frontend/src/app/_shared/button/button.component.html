@@ -1,0 +1,30 @@
+<!--
+  Un seul <ng-content> au total (dans #label), utilisé via ngTemplateOutlet.
+  Deux <ng-content> distincts dans <a> et <button> serait ambigu pour Angular :
+  la distribution de contenu projeté se fait à la compilation, pas selon la
+  branche *ngIf réellement active au runtime.
+-->
+<ng-template #label>
+  <i *ngIf="icon" class="fas" [ngClass]="icon" aria-hidden="true"></i>
+  <span><ng-content></ng-content></span>
+</ng-template>
+
+<a
+  *ngIf="routerLink"
+  class="btn"
+  [ngClass]="[variantClass, sizeClass]"
+  [routerLink]="routerLink">
+  <ng-container *ngTemplateOutlet="label"></ng-container>
+</a>
+
+<button
+  *ngIf="!routerLink"
+  class="btn"
+  [ngClass]="[variantClass, sizeClass]"
+  [type]="type"
+  [disabled]="disabled || loading"
+  (click)="onClick()">
+  <span *ngIf="loading" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+  <ng-container *ngIf="!loading" [ngTemplateOutlet]="label"></ng-container>
+  <span *ngIf="loading">{{ loadingText }}</span>
+</button>

@@ -1,6 +1,6 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Compiled output
+# compiled output
 /dist
 /tmp
 /out-tsc
@@ -33,7 +33,7 @@ yarn-error.log
 .sass-cache/
 /connect.lock
 /coverage
-/libpeerconnection.log
+/libpeerconnected.log
 testem.log
 /typings
 

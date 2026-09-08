@@ -1,49 +1,80 @@
-<header>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" style="color: rgb(241, 223, 223);" href="#">Library Management System</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-          <li class="nav-item">
-            <a routerLink="/books" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['Admin'])">Book List</a>
-          </li>
-
-          <li class="nav-item">
-            <a routerLink="/create-book" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['Admin'])">Add Book</a>
-          </li>
-
-          <li class="nav-item">
-            <a routerLink="/users" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['Admin'])">User List</a>
-          </li>
-
-          <li class="nav-item">
-            <a routerLink="/register-user" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['Admin'])">Register User</a>
-          </li>
-
-          <li class="nav-item">
-            <a routerLink="/borrow-book" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['User'])">Borrow Books</a>
-          </li>
-
-          <li class="nav-item">
-            <a routerLink="/return-book" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['User'])">Return Books</a>
-          </li>
-
-          <li class="nav-item right-text" *ngIf="isLoggedIn()">
-            <div class="nav-link disabled text-right">
-              <strong>
-                Hey {{name}}
-              </strong>
-            </div>
-          </li>
-
-        </ul>
-        <button *ngIf="!isLoggedIn()" type="button" class="btn btn-success" routerLink="/login">Login</button>
-        <button *ngIf="isLoggedIn()" type="button" class="btn btn-danger" (click)="logout()">Logout</button>
-      </div>
-    </div>
-  </nav>
+<!-- Barre compacte visible uniquement en dessous de 992px : logo + bouton menu -->
+<header class="mobile-topbar">
+  <button class="mobile-menu-btn" type="button" (click)="toggleMenu()" aria-label="Ouvrir le menu" aria-controls="appSidebar" [attr.aria-expanded]="!isCollapsed">
+    <i class="fas fa-bars" aria-hidden="true"></i>
+  </button>
+  <a class="brand-link" routerLink="/home">
+    <i class="fas fa-book-open brand-icon" aria-hidden="true"></i>
+    <span class="brand-text">Bibliothèque</span>
+  </a>
 </header>
+
+<div class="sidebar-backdrop" *ngIf="!isCollapsed" (click)="closeMenu()"></div>
+
+<aside class="sidebar" id="appSidebar" [ngClass]="{ 'sidebar--open': !isCollapsed, 'sidebar--rail': isRailCollapsed }">
+  <div class="sidebar-brand">
+    <a class="brand-link" routerLink="/home" (click)="closeMenu()" [title]="isRailCollapsed ? 'Bibliothèque' : ''">
+      <i class="fas fa-book-open brand-icon" aria-hidden="true"></i>
+      <span class="brand-text">Bibliothèque</span>
+    </a>
+    <button class="sidebar-close" type="button" (click)="closeMenu()" aria-label="Fermer le menu">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+    <button
+      class="sidebar-toggle"
+      type="button"
+      (click)="toggleRail()"
+      [attr.aria-expanded]="!isRailCollapsed"
+      [attr.aria-label]="isRailCollapsed ? 'Agrandir le menu' : 'Réduire le menu'"
+      [title]="isRailCollapsed ? 'Agrandir le menu' : 'Réduire le menu'">
+      <i class="fas" [ngClass]="isRailCollapsed ? 'fa-angles-right' : 'fa-angles-left'" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-link" routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()" [title]="isRailCollapsed ? 'Accueil' : ''">
+      <i class="fas fa-home" aria-hidden="true"></i> <span>Accueil</span>
+    </a>
+
+    <ng-container *ngIf="isLoggedIn() && isAdmin()">
+      <p class="sidebar-section">Catalogue</p>
+      <a class="sidebar-link" routerLink="/books" routerLinkActive="active" (click)="closeMenu()" [title]="isRailCollapsed ? 'Livres' : ''">
+        <i class="fas fa-book" aria-hidden="true"></i> <span>Livres</span>
+      </a>
+
+      <p class="sidebar-section">Comptes</p>
+      <a class="sidebar-link" routerLink="/users" routerLinkActive="active" (click)="closeMenu()" [title]="isRailCollapsed ? 'Utilisateurs' : ''">
+        <i class="fas fa-users" aria-hidden="true"></i> <span>Utilisateurs</span>
+      </a>
+    </ng-container>
+
+    <ng-container *ngIf="isLoggedIn()">
+      <p class="sidebar-section">Opérations</p>
+      <a class="sidebar-link" routerLink="/borrow" routerLinkActive="active" (click)="closeMenu()" [title]="isRailCollapsed ? 'Emprunter' : ''">
+        <i class="fas fa-hand-holding-heart" aria-hidden="true"></i> <span>Emprunter</span>
+      </a>
+      <a class="sidebar-link" routerLink="/borrow/return" routerLinkActive="active" (click)="closeMenu()" [title]="isRailCollapsed ? 'Rendre' : ''">
+        <i class="fas fa-undo-alt" aria-hidden="true"></i> <span>Rendre</span>
+      </a>
+      <a class="sidebar-link" routerLink="/reservations" routerLinkActive="active" (click)="closeMenu()" [title]="isRailCollapsed ? 'Réservations' : ''">
+        <i class="fas fa-calendar-check" aria-hidden="true"></i> <span>Réservations</span>
+      </a>
+    </ng-container>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a *ngIf="!isLoggedIn()" class="sidebar-link" routerLink="/login" routerLinkActive="active" (click)="closeMenu()">
+      <i class="fas fa-sign-in-alt" aria-hidden="true"></i> <span>Connexion</span>
+    </a>
+
+    <ng-container *ngIf="isLoggedIn()">
+      <div class="profile-chip">
+        <i class="fas fa-user-circle" aria-hidden="true"></i>
+        <span>{{ getUserName() }}</span>
+      </div>
+      <button class="sidebar-link logout-link" type="button" (click)="logout()">
+        <i class="fas fa-sign-out-alt" aria-hidden="true"></i> <span>Déconnexion</span>
+      </button>
+    </ng-container>
+  </div>
+</aside>

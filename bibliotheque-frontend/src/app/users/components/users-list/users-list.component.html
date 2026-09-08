@@ -1,0 +1,64 @@
+<main class="page-shell">
+  <div class="page-header">
+    <h2 class="page-title"><i class="fas fa-users" aria-hidden="true"></i> Liste des utilisateurs</h2>
+    <p class="page-subtitle">Gérez les comptes et consultez les historiques d'emprunt.</p>
+  </div>
+
+  <app-registration (userCreated)="getUsers()"></app-registration>
+
+  <app-table-state
+    [loading]="loading"
+    [error]="error"
+    [empty]="!loading && !error && filteredUsers.length === 0"
+    loadingLabel="Chargement des utilisateurs..."
+    [emptyIcon]="users.length === 0 ? 'fa-user-slash' : 'fa-magnifying-glass'"
+    [emptyLabel]="users.length === 0 ? 'Aucun utilisateur trouvé.' : 'Aucun résultat pour cette recherche.'"
+    (retry)="getUsers()">
+    <app-button *ngIf="users.length === 0" empty-action variant="primary" icon="fa-user-plus" (clicked)="registrationForm.openModal()">Ajouter un utilisateur</app-button>
+
+    <table class="table table-striped responsive-table-card">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Username</th>
+          <th>Rôle</th>
+          <th>Historique</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers" class="fade-in">
+          <td data-label="Nom"><span class="cell-strong">{{ user.name }}</span></td>
+          <td data-label="Username">{{ user.username }}</td>
+          <td data-label="Rôle">
+            <app-badge
+              [variant]="user.role[0].roleName === 'Admin' ? 'role-admin' : 'role-user'"
+              [icon]="user.role[0].roleName === 'Admin' ? 'fa-shield-halved' : 'fa-user'">
+              {{ user.role[0].roleName }}
+            </app-badge>
+          </td>
+          <td data-label="Historique">
+            <app-button *ngIf="user.role[0].roleName === 'User'" variant="success" size="sm" icon="fa-eye" (clicked)="userDetails(user.userId)">Voir</app-button>
+          </td>
+          <td data-label="Actions">
+            <div class="action-group">
+              <app-button variant="secondary" size="sm" icon="fa-edit" (clicked)="updateUser(user.userId)">Modifier</app-button>
+              <app-button variant="danger" size="sm" icon="fa-trash" (clicked)="askDeleteUser(user)">Supprimer</app-button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </app-table-state>
+
+  <app-confirm-dialog
+    [open]="!!userPendingDeletion"
+    variant="danger"
+    title="Supprimer cet utilisateur ?"
+    [message]="'Le compte de « ' + (userPendingDeletion?.name || '') + ' » sera définitivement supprimé. Cette action est irréversible.'"
+    confirmLabel="Supprimer"
+    cancelLabel="Annuler"
+    (confirmed)="confirmDeleteUser()"
+    (cancelled)="cancelDeleteUser()">
+  </app-confirm-dialog>
+</main>

@@ -1,0 +1,62 @@
+<div class="reservation-list">
+  <app-table-state
+    [loading]="loading"
+    [error]="error"
+    [empty]="!loading && !error && reservations.length === 0"
+    loadingLabel="Chargement des réservations..."
+    emptyIcon="fa-calendar-plus"
+    emptyLabel="Aucune réservation."
+    (retry)="retry.emit()">
+    <app-button empty-action variant="primary" icon="fa-book" routerLink="/books">Parcourir les livres</app-button>
+
+    <table class="table table-striped responsive-table-card">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Livre</th>
+          <th>Adhérent</th>
+          <th>Statut</th>
+          <th>Date réservation</th>
+          <th>Date expiration</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let reservation of reservations; let i = index" class="fade-in">
+          <td data-label="#">{{ i + 1 }}</td>
+          <td data-label="Livre"><span class="cell-strong">{{ reservation.bookTitle || reservation.bookId }}</span></td>
+          <td data-label="Adhérent">{{ reservation.userName || reservation.userId }}</td>
+          <td data-label="Statut">
+            <app-badge [variant]="getStatusColor(reservation.status)">{{ getStatusLabel(reservation.status) }}</app-badge>
+          </td>
+          <td data-label="Date réservation">{{ formatDate(reservation.reservationDate) }}</td>
+          <td data-label="Date expiration">{{ formatDate(reservation.expirationDate) }}</td>
+          <td data-label="Action">
+            <app-button
+              *ngIf="canCancel(reservation)"
+              variant="danger"
+              size="sm"
+              icon="fa-times"
+              (clicked)="askCancelReservation(reservation)">
+              Annuler
+            </app-button>
+            <span *ngIf="!canCancel(reservation)" class="text-muted small">
+              <i class="fas fa-lock" aria-hidden="true"></i> Non annulable
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </app-table-state>
+
+  <app-confirm-dialog
+    [open]="!!reservationPendingCancellation"
+    variant="danger"
+    title="Annuler cette réservation ?"
+    [message]="'La réservation de « ' + (reservationPendingCancellation?.bookTitle || '') + ' » pour ' + (reservationPendingCancellation?.userName || '') + ' sera annulée.'"
+    confirmLabel="Annuler la réservation"
+    cancelLabel="Retour"
+    (confirmed)="confirmCancelReservation()"
+    (cancelled)="dismissCancelReservation()">
+  </app-confirm-dialog>
+</div>

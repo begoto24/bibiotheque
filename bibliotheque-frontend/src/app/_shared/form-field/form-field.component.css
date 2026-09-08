@@ -1,0 +1,8 @@
+/* Empile proprement les champs quand plusieurs app-form-field se suivent
+   (ex. dans une modale, en une seule colonne). Les formulaires qui utilisent
+   encore leur propre grille (.row.g-3) passent par les classes Bootstrap sur
+   le conteneur parent et ne sont pas affectés. */
+:host {
+  display: block;
+  margin-bottom: var(--spacing-md);
+}

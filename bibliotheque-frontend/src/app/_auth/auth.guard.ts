@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserAuthService } from '../_service/user-auth.service';
-import { UsersService } from '../_service/users.service';
+import { UsersService } from '../users/services/users.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,15 +21,21 @@ export class AuthGuard implements CanActivate {
     if(this.userAuthService.getToken() !== null) {
       const role = route.data["roles"] as Array<string>;
 
-      if(role) {
-        const match = this.userService.roleMatch(role);
+      // Pas de restriction de rôle sur cette route : tout utilisateur connecté
+      // peut y accéder. (Avant ce correctif, l'absence de "roles" faisait
+      // tomber dans le cas "non connecté" ci-dessous et renvoyait vers
+      // /login même pour un utilisateur valide.)
+      if(!role) {
+        return true;
+      }
 
-        if(match) {
-          return true;
-        } else {
-          this.router.navigate(['/forbidden']);
-          return false;
-        }
+      const match = this.userService.roleMatch(role);
+
+      if(match) {
+        return true;
+      } else {
+        this.router.navigate(['/forbidden']);
+        return false;
       }
     }
 

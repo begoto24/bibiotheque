@@ -1,0 +1,8 @@
+/* app-button est un wrapper autour d'un <a> ou d'un <button> natif : il doit
+   se comporter comme un élément inline normal dans les layouts flex qui
+   l'entourent (.action-group, .form-actions...), pas comme un bloc. Le style
+   visuel réel (couleurs, tailles) vient des classes .btn/.btn-* globales de
+   styles.css, déjà appliquées sur l'élément projeté. */
+:host {
+  display: inline-flex;
+}

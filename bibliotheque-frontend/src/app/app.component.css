@@ -1,0 +1,31 @@
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.app-content-column {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-main {
+  flex: 1;
+}
+
+/* En dessous de 992px, la sidebar devient un tiroir (position: fixed) : elle
+   ne réserve plus de place dans le flux, donc il faut compenser la hauteur
+   de la barre compacte fixe pour que le contenu ne passe pas dessous. La
+   barre de recherche (app-topbar) est cachée à cette largeur. */
+@media (max-width: 991.98px) {
+  .app-main {
+    padding-top: 60px;
+  }
+}
+
+/* Page autonome (ex. connexion) : ni sidebar ni barre compacte mobile,
+   donc pas de compensation de hauteur à prévoir. */
+.app-main--standalone {
+  padding-top: 0;
+}
