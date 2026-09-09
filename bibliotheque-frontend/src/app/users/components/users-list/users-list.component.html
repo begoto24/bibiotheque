@@ -32,13 +32,13 @@
           <td data-label="Username">{{ user.username }}</td>
           <td data-label="Rôle">
             <app-badge
-              [variant]="user.role[0].roleName === 'Admin' ? 'role-admin' : 'role-user'"
-              [icon]="user.role[0].roleName === 'Admin' ? 'fa-shield-halved' : 'fa-user'">
-              {{ user.role[0].roleName }}
+              [variant]="roleName(user) === 'Admin' ? 'role-admin' : 'role-user'"
+              [icon]="roleName(user) === 'Admin' ? 'fa-shield-halved' : 'fa-user'">
+              {{ roleName(user) }}
             </app-badge>
           </td>
           <td data-label="Historique">
-            <app-button *ngIf="user.role[0].roleName === 'User'" variant="success" size="sm" icon="fa-eye" (clicked)="userDetails(user.userId)">Voir</app-button>
+            <app-button *ngIf="roleName(user) === 'User'" variant="success" size="sm" icon="fa-eye" (clicked)="userDetails(user.userId)">Voir</app-button>
           </td>
           <td data-label="Actions">
             <div class="action-group">

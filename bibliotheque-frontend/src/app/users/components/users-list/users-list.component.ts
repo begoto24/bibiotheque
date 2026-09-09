@@ -66,6 +66,12 @@ export class UsersListComponent implements OnInit, OnDestroy {
     );
   }
 
+  /** Defensif : ne doit jamais planter l'affichage de toute la liste si un
+   *  utilisateur arrive sans role associe (incoherence de donnees cote back). */
+  roleName(user: Users): string {
+    return user.role?.[0]?.roleName ?? 'Inconnu';
+  }
+
   userDetails(userId: number) {
     this.router.navigate(['/users/details', userId ]);
   }

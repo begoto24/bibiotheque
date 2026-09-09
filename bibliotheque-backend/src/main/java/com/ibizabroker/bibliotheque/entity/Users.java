@@ -25,7 +25,14 @@ public class Users {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    // Pas de cascade : Role est une donnee de reference partagee (Admin/User),
+    // pas possedee par un seul utilisateur. Avec CascadeType.ALL (incluant
+    // REMOVE), supprimer UN utilisateur supprimait la ligne "role" elle-meme,
+    // ce qui faisait perdre le role de TOUS les autres utilisateurs qui la
+    // partageaient (ON DELETE CASCADE sur user_role.role_id propage ensuite).
+    // Sans cascade, JPA continue de gerer la table de jointure user_role
+    // normalement ; seule la propagation vers l'entite Role elle-meme est coupee.
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = {
                     @JoinColumn(name = "user_id")
