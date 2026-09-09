@@ -10,9 +10,9 @@ export const ReservationStatusLabels: Record<ReservationStatus | 'TOUS', string>
   TOUS: 'Tous',
   [ReservationStatus.EN_ATTENTE]: 'En attente',
   [ReservationStatus.DISPONIBLE]: 'Disponible',
-  [ReservationStatus.ANNULEE]: 'Annulee',
-  [ReservationStatus.EXPIREE]: 'Expiree',
-  [ReservationStatus.HONOREE]: 'Honoree'
+  [ReservationStatus.ANNULEE]: 'Annulée',
+  [ReservationStatus.EXPIREE]: 'Expirée',
+  [ReservationStatus.HONOREE]: 'Honorée'
 };
 
 export const ReservationStatusColors: Record<ReservationStatus, string> = {

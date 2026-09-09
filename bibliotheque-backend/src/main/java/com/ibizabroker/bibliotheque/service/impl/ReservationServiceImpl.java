@@ -6,6 +6,7 @@ import com.ibizabroker.bibliotheque.dao.UsersRepository;
 import com.ibizabroker.bibliotheque.entity.Books;
 import com.ibizabroker.bibliotheque.entity.Reservation;
 import com.ibizabroker.bibliotheque.entity.ReservationRequest;
+import com.ibizabroker.bibliotheque.entity.ReservationResponse;
 import com.ibizabroker.bibliotheque.entity.ReservationStatus;
 import com.ibizabroker.bibliotheque.entity.Users;
 import com.ibizabroker.bibliotheque.exceptions.ConflictException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -33,10 +35,16 @@ public class ReservationServiceImpl implements IReservationService {
     private UsersRepository usersRepository;
 
     @Override
-    public Reservation createReservation(ReservationRequest request) {
-        // Validation des paramètres obligatoires
-        if (request.getBookId() == null || request.getAdherentId() == null) {
+    public ReservationResponse createReservation(ReservationRequest request) {
+        // Validation des paramètres obligatoires : le message dit lequel manque
+        if (request.getBookId() == null && request.getAdherentId() == null) {
             throw new IllegalArgumentException("bookId et adherentId sont obligatoires");
+        }
+        if (request.getBookId() == null) {
+            throw new IllegalArgumentException("bookId est obligatoire");
+        }
+        if (request.getAdherentId() == null) {
+            throw new IllegalArgumentException("adherentId est obligatoire");
         }
 
         // Vérifier que le livre existe
@@ -71,30 +79,33 @@ public class ReservationServiceImpl implements IReservationService {
         reservation.setUserId(request.getAdherentId());
         reservation.setStatus(ReservationStatus.EN_ATTENTE);
 
-        return reservationRepository.save(reservation);
+        Reservation saved = reservationRepository.save(reservation);
+        return toResponse(saved, book, user);
     }
 
     @Override
-    public List<Reservation> getReservations(ReservationStatus status, Integer userId) {
+    public List<ReservationResponse> getReservations(ReservationStatus status, Integer userId) {
+        List<Reservation> reservations;
         if (status != null && userId != null) {
-            return reservationRepository.findByUserIdAndStatus(userId, status);
+            reservations = reservationRepository.findByUserIdAndStatus(userId, status);
         } else if (status != null) {
-            return reservationRepository.findByStatus(status);
+            reservations = reservationRepository.findByStatus(status);
         } else if (userId != null) {
-            return reservationRepository.findByUserId(userId);
+            reservations = reservationRepository.findByUserId(userId);
+        } else {
+            reservations = reservationRepository.findAll();
         }
-        return reservationRepository.findAll();
+        return reservations.stream().map(this::toResponse).collect(Collectors.toList());
     }
 
     @Override
-    public Reservation getReservationById(Integer id) {
-        return reservationRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Réservation non trouvée avec l'id: " + id));
+    public ReservationResponse getReservationById(Integer id) {
+        return toResponse(findReservationOrThrow(id));
     }
 
     @Override
-    public Reservation annulerReservation(Integer id) {
-        Reservation reservation = getReservationById(id);
+    public ReservationResponse annulerReservation(Integer id) {
+        Reservation reservation = findReservationOrThrow(id);
 
         // RG-06 : Une réservation ANNULEE, EXPIREE ou HONOREE ne peut plus changer d'état
         // RG-05 : Une réservation ne peut être annulée que si son statut est EN_ATTENTE ou DISPONIBLE
@@ -109,13 +120,47 @@ public class ReservationServiceImpl implements IReservationService {
         }
 
         reservation.setStatus(ReservationStatus.ANNULEE);
-        return reservationRepository.save(reservation);
+        return toResponse(reservationRepository.save(reservation));
     }
 
     @Override
     public void deleteReservation(Integer id) {
-        Reservation reservation = reservationRepository.findById(id)
+        reservationRepository.delete(findReservationOrThrow(id));
+    }
+
+    private Reservation findReservationOrThrow(Integer id) {
+        return reservationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Réservation non trouvée avec l'id: " + id));
-        reservationRepository.delete(reservation);
+    }
+
+    /** Résout bookTitle/userName par ID — utilisé quand on n'a pas déjà Books/Users sous la main. */
+    private ReservationResponse toResponse(Reservation r) {
+        String bookTitle = r.getBookId() != null
+                ? booksRepository.findById(r.getBookId()).map(Books::getBookName).orElse(null)
+                : null;
+        String userName = r.getUserId() != null
+                ? usersRepository.findById(r.getUserId()).map(Users::getName).orElse(null)
+                : null;
+        return buildResponse(r, bookTitle, userName);
+    }
+
+    /** Variante sans requêtes supplémentaires quand Books/Users sont déjà chargés (création). */
+    private ReservationResponse toResponse(Reservation r, Books book, Users user) {
+        return buildResponse(r, book.getBookName(), user.getName());
+    }
+
+    private ReservationResponse buildResponse(Reservation r, String bookTitle, String userName) {
+        boolean active = r.getStatus() == ReservationStatus.EN_ATTENTE || r.getStatus() == ReservationStatus.DISPONIBLE;
+        return new ReservationResponse(
+                r.getReservationId(),
+                r.getBookId(),
+                bookTitle,
+                r.getUserId(),
+                userName,
+                r.getDateReservation(),
+                r.getDateExpiration(),
+                r.getStatus(),
+                active
+        );
     }
 }

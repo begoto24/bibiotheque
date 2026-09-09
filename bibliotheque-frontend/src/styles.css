@@ -891,6 +891,17 @@ button:focus-visible,
         text-transform: uppercase;
     }
 
+    /* Le contenu de la carte (titre, nom...) est le 2e enfant flex du td,
+       juste après le ::before ci-dessus. Sans min-width:0, un flex-item ne
+       rétrécit jamais sous la largeur de son contenu : un titre long dépasse
+       les ~58% restants et se fait couper par l'overflow:hidden de la carte
+       (règle #13 ci-dessus). overflow-wrap le laisse passer à la ligne à la
+       place de déborder. */
+    .responsive-table-card td > * {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
     .responsive-table-card td .action-group,
     .responsive-table-card td .btn {
         width: 100%;

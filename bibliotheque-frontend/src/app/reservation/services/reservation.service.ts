@@ -34,16 +34,4 @@ export class ReservationService extends ApiBaseService {
   deleteReservation(id: number): Observable<void> {
     return this.delete<void>(`${this.endpoint}/${id}`);
   }
-
-  getReservationsByStatus(status: string): Observable<Reservation[]> {
-    return this.get<Reservation[]>(`${this.endpoint}/status/${status}`);
-  }
-
-  getReservationsByUser(userId: number): Observable<Reservation[]> {
-    return this.get<Reservation[]>(`${this.endpoint}/user/${userId}`);
-  }
-
-  getActiveReservationsByUser(userId: number): Observable<Reservation[]> {
-    return this.get<Reservation[]>(`${this.endpoint}/user/${userId}/active`);
-  }
 }

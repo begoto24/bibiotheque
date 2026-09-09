@@ -64,7 +64,12 @@ public class WebSecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/authenticate", "/borrow/**", "/admin/books/", "/actuator/health").permitAll()
+                        // "/error" doit rester public : c'est la cible du forward interne que Spring
+                        // fait sur toute exception non gérée d'un contrôleur. Sans ça, JwtRequestFilter
+                        // (qui ne se réexécute pas sur ce dispatch interne) laisse ce forward sans
+                        // authentification, et un vrai 500 revient maquillé en 401 "session expirée" —
+                        // ce qui déconnecte l'utilisateur à tort au lieu de montrer l'erreur réelle.
+                        .requestMatchers("/authenticate", "/borrow/**", "/admin/books/", "/actuator/health", "/error").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

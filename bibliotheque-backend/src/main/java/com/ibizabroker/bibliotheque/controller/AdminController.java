@@ -1,6 +1,8 @@
 package com.ibizabroker.bibliotheque.controller;
 
+import com.ibizabroker.bibliotheque.dao.RoleRepository;
 import com.ibizabroker.bibliotheque.dao.UsersRepository;
+import com.ibizabroker.bibliotheque.entity.Role;
 import com.ibizabroker.bibliotheque.entity.Users;
 import com.ibizabroker.bibliotheque.exceptions.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,7 +13,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @CrossOrigin("http://localhost:4200/")
 @RestController
@@ -23,22 +29,19 @@ public class AdminController {
     private UsersRepository usersRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @PreAuthorize("hasRole('Admin')")
     @PostMapping("/users")
-    @Operation(summary = "Créer un utilisateur", description = "Crée un nouvel utilisateur. Le mot de passe est automatiquement chiffré.")
+    @Operation(summary = "Créer un utilisateur", description = "Crée un nouvel utilisateur. Le mot de passe est automatiquement chiffré. Rôle Admin requis.")
     public Users addUserByAdmin(@RequestBody Users user) {
-//        Role role = new Role();
-////        role.setRoleName(UserConstant.DEFAULT_ROLE);
-//        role.setRoleName(role.getRoleName());
-//        Set<Role> setRole = new HashSet<>();
-//        setRole.add(role);
-//        user.setRole(setRole);
-        String password = user.getPassword();
-        String encryptPassword = passwordEncoder.encode(password);
+        user.setRole(resolveRoles(user.getRole()));
+        String encryptPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptPassword);
-        usersRepository.save(user);
-        return user;
+        return usersRepository.save(user);
     }
 
     @GetMapping("/users")
@@ -63,10 +66,41 @@ public class AdminController {
         Users user = usersRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id "+ id +" does not exist."));
 
         user.setName(userDetails.getName());
-        user.setRole(userDetails.getRole());
         user.setUsername(userDetails.getUsername());
+        user.setRole(resolveRoles(userDetails.getRole()));
 
         Users updatedUser = usersRepository.save(user);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @PreAuthorize("hasRole('Admin')")
+    @DeleteMapping("/users/{id}")
+    @Operation(summary = "Supprimer un utilisateur", description = "Supprime définitivement un utilisateur. Rôle Admin requis.")
+    public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable Integer id) {
+        Users user = usersRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id " + id + " does not exist."));
+
+        usersRepository.delete(user);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", Boolean.TRUE);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Remplace les rôles envoyés par le client (qui n'ont qu'un roleName, pas
+     * de roleId) par les rôles réellement persistés. Sans ça, le cascade ALL
+     * sur Users.role tente de ré-insérer "Admin"/"User" et viole la contrainte
+     * UNIQUE(role_name) — c'est ce qui faisait planter toute création/modification.
+     */
+    private Set<Role> resolveRoles(Set<Role> requestedRoles) {
+        Set<Role> resolved = new HashSet<>();
+        if (requestedRoles == null) {
+            return resolved;
+        }
+        for (Role requested : requestedRoles) {
+            Role role = roleRepository.findByRoleName(requested.getRoleName())
+                    .orElseThrow(() -> new NotFoundException("Rôle inconnu: " + requested.getRoleName()));
+            resolved.add(role);
+        }
+        return resolved;
     }
 }

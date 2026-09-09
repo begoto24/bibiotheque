@@ -6,6 +6,7 @@ import com.ibizabroker.bibliotheque.dao.UsersRepository;
 import com.ibizabroker.bibliotheque.entity.Books;
 import com.ibizabroker.bibliotheque.entity.Reservation;
 import com.ibizabroker.bibliotheque.entity.ReservationRequest;
+import com.ibizabroker.bibliotheque.entity.ReservationResponse;
 import com.ibizabroker.bibliotheque.entity.ReservationStatus;
 import com.ibizabroker.bibliotheque.entity.Users;
 import com.ibizabroker.bibliotheque.exceptions.ConflictException;
@@ -98,7 +99,7 @@ class ReservationServiceUnitTest {
         });
 
         // WHEN
-        Reservation result = reservationService.createReservation(request);
+        ReservationResponse result = reservationService.createReservation(request);
 
         // THEN : 201 Created
         assertNotNull(result);
@@ -124,7 +125,7 @@ class ReservationServiceUnitTest {
         });
 
         // WHEN : RG-01 ne se déclenche PAS car noOfCopies n'est pas > 0
-        Reservation result = reservationService.createReservation(request);
+        ReservationResponse result = reservationService.createReservation(request);
 
         // THEN : la réservation est créée (le livre est indisponible)
         assertNotNull(result);
@@ -172,7 +173,7 @@ class ReservationServiceUnitTest {
         });
 
         // WHEN
-        Reservation result = reservationService.createReservation(request);
+        ReservationResponse result = reservationService.createReservation(request);
 
         // THEN : la réservation est créée
         assertNotNull(result);
@@ -222,7 +223,7 @@ class ReservationServiceUnitTest {
         });
 
         // WHEN
-        Reservation result = reservationService.createReservation(request);
+        ReservationResponse result = reservationService.createReservation(request);
 
         // THEN : 3ème réservation acceptée
         assertNotNull(result);
@@ -253,14 +254,14 @@ class ReservationServiceUnitTest {
         });
 
         // WHEN
-        Reservation result = reservationService.createReservation(request);
+        ReservationResponse result = reservationService.createReservation(request);
 
         // THEN
-        assertNotNull(result.getDateReservation());
-        assertNotNull(result.getDateExpiration());
+        assertNotNull(result.getReservationDate());
+        assertNotNull(result.getExpirationDate());
         assertEquals(7,
                 java.time.temporal.ChronoUnit.DAYS.between(
-                        result.getDateReservation(), result.getDateExpiration()),
+                        result.getReservationDate(), result.getExpirationDate()),
                 "L'expiration doit être à exactement 7 jours de la réservation");
     }
 
@@ -278,7 +279,7 @@ class ReservationServiceUnitTest {
         when(reservationRepository.save(any(Reservation.class))).thenAnswer(inv -> inv.getArgument(0));
 
         // WHEN
-        Reservation result = reservationService.annulerReservation(10);
+        ReservationResponse result = reservationService.annulerReservation(10);
 
         // THEN
         assertEquals(ReservationStatus.ANNULEE, result.getStatus());
@@ -294,7 +295,7 @@ class ReservationServiceUnitTest {
         when(reservationRepository.save(any(Reservation.class))).thenAnswer(inv -> inv.getArgument(0));
 
         // WHEN
-        Reservation result = reservationService.annulerReservation(11);
+        ReservationResponse result = reservationService.annulerReservation(11);
 
         // THEN
         assertEquals(ReservationStatus.ANNULEE, result.getStatus());
@@ -434,7 +435,7 @@ class ReservationServiceUnitTest {
                 .thenReturn(Arrays.asList(r1));
 
         // WHEN
-        List<Reservation> result = reservationService.getReservations(ReservationStatus.EN_ATTENTE, null);
+        List<ReservationResponse> result = reservationService.getReservations(ReservationStatus.EN_ATTENTE, null);
 
         // THEN
         assertEquals(1, result.size());
@@ -450,7 +451,7 @@ class ReservationServiceUnitTest {
         when(reservationRepository.findByUserId(2)).thenReturn(Arrays.asList(r1));
 
         // WHEN
-        List<Reservation> result = reservationService.getReservations(null, 2);
+        List<ReservationResponse> result = reservationService.getReservations(null, 2);
 
         // THEN
         assertEquals(1, result.size());
@@ -463,7 +464,7 @@ class ReservationServiceUnitTest {
         when(reservationRepository.findAll()).thenReturn(Arrays.asList(new Reservation(), new Reservation()));
 
         // WHEN
-        List<Reservation> result = reservationService.getReservations(null, null);
+        List<ReservationResponse> result = reservationService.getReservations(null, null);
 
         // THEN
         assertEquals(2, result.size());

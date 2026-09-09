@@ -35,3 +35,18 @@
   color: var(--text-secondary);
   margin-bottom: var(--spacing-lg);
 }
+
+/* Icône au-dessus du texte, sur tous les écrans — surcharge le .btn global
+   (inline-flex en ligne) sans le modifier pour le reste de l'app. */
+.forbidden-home-btn {
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  height: auto;
+  padding-top: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  white-space: normal;
+}
+
+.forbidden-home-btn i {
+  font-size: 1.25rem;
+}
