@@ -6,6 +6,8 @@ import com.ibizabroker.bibliotheque.dao.UsersRepository;
 import com.ibizabroker.bibliotheque.entity.Books;
 import com.ibizabroker.bibliotheque.entity.Borrow;
 import com.ibizabroker.bibliotheque.entity.Users;
+import com.ibizabroker.bibliotheque.exceptions.ConflictException;
+import com.ibizabroker.bibliotheque.exceptions.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +34,18 @@ public class BorrowController {
 
     @PostMapping
     @Operation(summary = "Emprunter un livre", description = "Enregistre l'emprunt d'un livre par un adhérent. Le livre doit être en stock.")
-    public String borrowBook(@RequestBody Borrow borrow) {
-        Users user = usersRepository.findById(borrow.getUserId()).get();
-        Books book = booksRepository.findById(borrow.getBookId()).get();
+    public Borrow borrowBook(@RequestBody Borrow borrow) {
+        // .get() sur un Optional vide levait NoSuchElementException, non gerée ->
+        // 500 muet. orElseThrow donne un vrai 404 via GlobalExceptionHandler.
+        usersRepository.findById(borrow.getUserId())
+                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec l'id: " + borrow.getUserId()));
+        Books book = booksRepository.findById(borrow.getBookId())
+                .orElseThrow(() -> new NotFoundException("Livre non trouvé avec l'id: " + borrow.getBookId()));
 
+        // Avant : renvoyait un texte brut en 200, indiscernable d'un succès pour
+        // le frontend (et cassait le parsing JSON d'Angular dans les deux cas).
         if (book.getNoOfCopies() < 1) {
-            return "The book \"" + book.getBookName() + "\" is out of stock!";
+            throw new ConflictException("Le livre \"" + book.getBookName() + "\" est en rupture de stock");
         }
 
         book.borrowBook();
@@ -46,8 +54,7 @@ public class BorrowController {
         LocalDateTime currentDate = LocalDateTime.now();
         borrow.setIssueDate(currentDate);
         borrow.setDueDate(currentDate.plusDays(7));
-        borrowRepository.save(borrow);
-        return user.getName() + " has borrowed one copy of \"" + book.getBookName() + "\"!";
+        return borrowRepository.save(borrow);
     }
 
     @GetMapping
@@ -59,8 +66,10 @@ public class BorrowController {
     @PutMapping
     @Operation(summary = "Retourner un livre", description = "Enregistre le retour d'un livre emprunté. Incrémente le nombre d'exemplaires disponibles.")
     public Borrow returnBook(@RequestBody Borrow borrow) {
-        Borrow borrowBook = borrowRepository.findById(borrow.getBorrowId()).get();
-        Books book = booksRepository.findById(borrowBook.getBookId()).get();
+        Borrow borrowBook = borrowRepository.findById(borrow.getBorrowId())
+                .orElseThrow(() -> new NotFoundException("Emprunt non trouvé avec l'id: " + borrow.getBorrowId()));
+        Books book = booksRepository.findById(borrowBook.getBookId())
+                .orElseThrow(() -> new NotFoundException("Livre non trouvé avec l'id: " + borrowBook.getBookId()));
 
         book.returnBook();
         booksRepository.save(book);

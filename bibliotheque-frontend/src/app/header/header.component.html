@@ -50,12 +50,17 @@
 
     <ng-container *ngIf="isLoggedIn()">
       <p class="sidebar-section">Opérations</p>
-      <a class="sidebar-link" routerLink="/borrow" routerLinkActive="active" (click)="closeMenu()" [title]="isRailCollapsed ? 'Emprunter' : ''">
-        <i class="fas fa-hand-holding-heart" aria-hidden="true"></i> <span>Emprunter</span>
-      </a>
-      <a class="sidebar-link" routerLink="/borrow/return" routerLinkActive="active" (click)="closeMenu()" [title]="isRailCollapsed ? 'Rendre' : ''">
-        <i class="fas fa-undo-alt" aria-hidden="true"></i> <span>Rendre</span>
-      </a>
+      <!-- /borrow et /borrow/return sont réservées au rôle User (ADHERENT) :
+           un bibliothécaire n'emprunte pas pour lui-même. Les cacher pour lui
+           évite un "Accès refusé" systématique au clic. -->
+      <ng-container *ngIf="!isAdmin()">
+        <a class="sidebar-link" routerLink="/borrow" routerLinkActive="active" (click)="closeMenu()" [title]="isRailCollapsed ? 'Emprunter' : ''">
+          <i class="fas fa-hand-holding-heart" aria-hidden="true"></i> <span>Emprunter</span>
+        </a>
+        <a class="sidebar-link" routerLink="/borrow/return" routerLinkActive="active" (click)="closeMenu()" [title]="isRailCollapsed ? 'Rendre' : ''">
+          <i class="fas fa-undo-alt" aria-hidden="true"></i> <span>Rendre</span>
+        </a>
+      </ng-container>
       <a class="sidebar-link" routerLink="/reservations" routerLinkActive="active" (click)="closeMenu()" [title]="isRailCollapsed ? 'Réservations' : ''">
         <i class="fas fa-calendar-check" aria-hidden="true"></i> <span>Réservations</span>
       </a>
