@@ -39,8 +39,7 @@ export class HeaderComponent {
   }
 
   isAdmin(): boolean {
-    const roles: any[] = this.userAuthService.getRoles() || [];
-    return roles.some(role => role?.roleName === 'Admin' || role === 'Admin');
+    return this.userAuthService.isAdmin();
   }
 
   getUserName(): string {

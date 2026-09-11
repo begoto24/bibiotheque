@@ -62,6 +62,14 @@ public class JwtService implements UserDetailsService {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
         user.getRole().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
+            // Seance 4 : mappe vers le vocabulaire ADHERENT/BIBLIOTHECAIRE exige par le
+            // module Reservation, sans renommer les roles Admin/User utilises partout
+            // ailleurs dans l'appli (Books, Users, Borrow, navigation frontend...).
+            if ("Admin".equals(role.getRoleName())) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_BIBLIOTHECAIRE"));
+            } else if ("User".equals(role.getRoleName())) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_ADHERENT"));
+            }
         });
         return authorities;
     }

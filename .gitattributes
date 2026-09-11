@@ -1,0 +1,18 @@
+# Les scripts shell doivent toujours rester en LF, quelle que soit la
+# config core.autocrlf du client Windows qui checkout — sinon ils cassent
+# sous WSL/Linux/macOS/Docker ("cannot execute: required file not found",
+# le shebang #!/bin/sh devient #!/bin/sh\r).
+mvnw            text eol=lf
+*.sh            text eol=lf
+
+# Les scripts batch Windows doivent au contraire rester en CRLF.
+mvnw.cmd        text eol=crlf
+*.bat           text eol=crlf
+*.cmd           text eol=crlf
+
+# Binaires : jamais de conversion de fin de ligne.
+*.jar           binary
+*.png           binary
+*.jpg           binary
+*.jpeg           binary
+*.ico           binary

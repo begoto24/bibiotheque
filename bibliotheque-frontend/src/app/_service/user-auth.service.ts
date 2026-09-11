@@ -47,4 +47,13 @@ export class UserAuthService {
     return this.getRoles() && this.getToken();
   }
 
+  /**
+   * true si l'utilisateur connecté a le rôle Admin (mappé BIBLIOTHECAIRE côté
+   * API pour le module Réservation — voir JwtService.getAuthority côté backend).
+   */
+  public isAdmin(): boolean {
+    const roles: any[] = this.getRoles() || [];
+    return roles.some(role => role?.roleName === 'Admin' || role === 'Admin');
+  }
+
 }

@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <div class="form-group mb-3">
+      <div class="form-group mb-3" *ngIf="isBibliothecaire">
         <label for="adherentId" class="form-label">
           <i class="fas fa-user" aria-hidden="true"></i> Adhérent
         </label>
@@ -57,6 +57,11 @@
           L'adhérent est obligatoire.
         </div>
       </div>
+
+      <p *ngIf="!isBibliothecaire" class="status-hint-text mb-3">
+        <i class="fas fa-circle-info" aria-hidden="true"></i>
+        Cette réservation sera faite en votre nom.
+      </p>
 
       <div class="status-hint">
         <span class="badge badge-pending">

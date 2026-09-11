@@ -33,18 +33,21 @@ export class UsersService extends ApiBaseService {
   }
 
   public roleMatch(allowedRoles: any): boolean {
-    let isMatch = false;
     const userRoles: any = this.userAuthService.getRoles();
 
-    if (userRoles != null && userRoles) {
-      for (let i = 0; i < userRoles.length; i++) {
-        for (let j = 0; j < allowedRoles.length; j++) {
-          if (userRoles[i].roleName === allowedRoles[j]) {
-            isMatch = true;
-            return isMatch;
-          } else {
-            return isMatch;
-          }
+    if (!userRoles) {
+      return false;
+    }
+
+    // Bug corrigé : l'ancienne version sortait dès la 1re comparaison qui
+    // échouait, sans jamais vérifier les rôles suivants — ex. un compte
+    // "User" contre allowedRoles=['Admin','User'] était toujours rejeté,
+    // car "User" n'est jamais en 1re position. Ici on parcourt vraiment
+    // toutes les combinaisons avant de conclure à l'absence de match.
+    for (let i = 0; i < userRoles.length; i++) {
+      for (let j = 0; j < allowedRoles.length; j++) {
+        if (userRoles[i].roleName === allowedRoles[j]) {
+          return true;
         }
       }
     }
