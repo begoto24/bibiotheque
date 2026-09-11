@@ -32,8 +32,8 @@
   </div>
 
   <nav class="sidebar-nav">
-    <a class="sidebar-link" routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()" [title]="isRailCollapsed ? 'Accueil' : ''">
-      <i class="fas fa-home" aria-hidden="true"></i> <span>Accueil</span>
+    <a class="sidebar-link" routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()" [title]="isRailCollapsed ? 'Tableau de bord' : ''">
+      <i class="fas fa-gauge-high" aria-hidden="true"></i> <span>Tableau de bord</span>
     </a>
 
     <ng-container *ngIf="isLoggedIn() && isAdmin()">

@@ -37,12 +37,9 @@ export class LoginComponent implements OnInit {
         this.userAuthSerivce.setUserId(response.user.userId);
         this.userAuthSerivce.setName(response.user.name);
 
-        const role = response.user.role[0].roleName;
-        if (role === 'Admin') {
-          this.router.navigate(['/books']);
-        } else {
-          this.router.navigate(['/borrow']);
-        }
+        // Tout le monde atterrit sur le tableau de bord — son contenu s'adapte
+        // ensuite au rôle (voir HomeComponent).
+        this.router.navigate(['/home']);
       },
       (error: any) => {
         this.loading = false;
