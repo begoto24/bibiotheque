@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
@@ -20,13 +20,17 @@ import { UserAuthService } from '../_service/user-auth.service';
 })
 export class TopbarComponent implements OnInit, OnDestroy {
   searchQuery = '';
+  /** Le bouton Déconnexion n'est plus affiché en permanence : il vit dans ce
+   *  menu, ouvert en cliquant sur le profil (moins de bruit visuel constant). */
+  isProfileMenuOpen = false;
 
   private routerSubscription?: Subscription;
 
   constructor(
     private userAuthService: UserAuthService,
     private router: Router,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private elementRef: ElementRef<HTMLElement>
   ) { }
 
   ngOnInit(): void {
@@ -37,11 +41,28 @@ export class TopbarComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.searchQuery = '';
         this.searchService.clear();
+        this.isProfileMenuOpen = false;
       });
   }
 
   ngOnDestroy(): void {
     this.routerSubscription?.unsubscribe();
+  }
+
+  toggleProfileMenu(): void {
+    this.isProfileMenuOpen = !this.isProfileMenuOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    if (!this.elementRef.nativeElement.contains(event.target as Node)) {
+      this.isProfileMenuOpen = false;
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.isProfileMenuOpen = false;
   }
 
   onSearchInput(value: string): void {

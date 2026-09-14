@@ -62,19 +62,84 @@
   display: flex;
   flex-shrink: 0;
   gap: var(--spacing-sm);
+  position: relative;
 }
 
+/* Profil : bouton (plus un <span>) qui ouvre le menu au clic — la
+   déconnexion n'est plus affichée en permanence à côté du nom. */
 .profile-chip {
   align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
   color: var(--text-primary);
+  cursor: pointer;
   display: inline-flex;
   font-size: var(--font-size-base);
   font-weight: var(--fw-semibold);
   gap: var(--spacing-sm);
+  padding: 6px var(--spacing-sm);
+  transition: background-color var(--transition), border-color var(--transition);
   white-space: nowrap;
 }
 
-.profile-chip i {
+.profile-chip:hover {
+  background: var(--bg-body);
+  border-color: var(--border);
+}
+
+.profile-chip-caret {
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  transition: transform var(--transition);
+}
+
+.profile-chip-caret--open {
+  transform: rotate(180deg);
+}
+
+.profile-menu {
+  animation: dialog-in 0.15s ease both;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: var(--z-dropdown);
+}
+
+.profile-menu-item {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--danger);
+  cursor: pointer;
+  display: flex;
+  font-size: var(--font-size-sm);
+  font-weight: var(--fw-semibold);
+  gap: var(--spacing-sm);
+  padding: 9px var(--spacing-md);
+  text-align: left;
+  transition: background-color var(--transition);
+  width: 100%;
+}
+
+.profile-menu-item:hover {
+  background: rgba(231, 76, 60, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-menu {
+    animation-duration: 0.001ms !important;
+  }
+}
+
+.profile-chip i:first-child {
   color: var(--accent-dark);
   font-size: 1.6rem;
 }
