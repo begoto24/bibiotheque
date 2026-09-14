@@ -1,14 +1,18 @@
+/* backdrop-in/dialog-in : réutilise les @keyframes globales de styles.css
+   (Angular ne scope pas les noms de @keyframes par composant — même
+   principe déjà utilisé par select.component.css), pas la peine de les
+   redéclarer ici à l'identique. */
 .dialog-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(45, 52, 54, 0.55);
+  background: var(--overlay);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--spacing-md);
-  z-index: 1055;
+  z-index: var(--z-modal);
   animation: backdrop-in 0.3s ease both;
 }
 
@@ -21,16 +25,6 @@
   width: 100%;
   text-align: center;
   animation: dialog-in 0.3s ease both;
-}
-
-@keyframes backdrop-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes dialog-in {
-  from { opacity: 0; transform: translateY(8px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .dialog-icon {
@@ -53,7 +47,7 @@
 
 .dialog-title {
   margin-bottom: var(--spacing-sm);
-  font-size: 1.25rem;
+  font-size: var(--font-size-md);
 }
 
 .dialog-message {
