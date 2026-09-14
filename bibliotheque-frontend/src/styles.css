@@ -13,8 +13,11 @@
     --accent: #8FA283;            /* Vert sauge - Actions secondaires, badges, focus, liens actifs */
     --accent-dark: #758A6A;       /* Vert sauge foncé - Hover sur accent */
     --success: #27AE60;           /* Vert - Statut disponible */
+    --success-dark: #219A52;      /* Vert foncé - Hover/actif sur success (remplace le hex en dur) */
     --warning: #F39C12;           /* Orange - Statut en attente / alerte */
+    --warning-dark: #D68910;      /* Orange foncé - Hover/actif sur warning */
     --danger: #E74C3C;            /* Rouge - Statut en retard, suppression */
+    --danger-dark: #C0392B;       /* Rouge foncé - Hover/actif sur danger */
     --info: var(--primary-light); /* Bordeaux clair - Informations / statut emprunté */
 
     /* Couleurs de fond */
@@ -30,6 +33,12 @@
 
     /* Bordures */
     --border: #e1e4e8;
+
+    /* Overlay (fond assombri des modales/dialogues/tiroir mobile) — dérivé de
+       --text-primary (#2D3436 = rgb(45,52,54)), nommé une fois au lieu d'être
+       recopié en rgba() brut à chaque backdrop. */
+    --overlay: rgba(45, 52, 54, 0.55);
+    --overlay-subtle: rgba(45, 52, 54, 0.08);
 
     /* Ombres douces et subtiles (teintées bordeaux) */
     --shadow-sm: 0 2px 6px rgba(107, 46, 58, 0.07);
@@ -55,9 +64,36 @@
     /* Transition standard des interactions */
     --transition: 0.3s ease;
 
+    /* Échelle z-index — deux couches d'overlay dans l'app : le menu déroulant
+       maison (app-select) doit pouvoir s'ouvrir À L'INTÉRIEUR d'une modale,
+       donc rester en dessous d'elle. Nommé pour que ce ne soit plus un hasard
+       de nombres (1050 vs 1055) mais une relation explicite. */
+    --z-dropdown: 1050;
+    --z-modal: 1055;
+
     /* Typographie */
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    /* Échelle de tailles (même logique de paliers que --spacing-*) */
+    --font-size-xs: 0.75rem;    /* badges, libellés de tableau, micro-texte */
+    --font-size-sm: 0.875rem;   /* texte secondaire, corps de tableau, bouton sm */
+    --font-size-base: 1rem;     /* corps de texte par défaut */
+    --font-size-md: 1.125rem;   /* titres de modale, emphase */
+    --font-size-lg: 1.375rem;   /* h3 */
+    --font-size-xl: 1.75rem;    /* h2 */
+    --font-size-xxl: 2.25rem;   /* h1 */
+
+    /* Poids : remplace les valeurs éparpillées (600, 650, 700, 800...) */
+    --fw-regular: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    --fw-black: 800;
+
+    /* Hauteurs de ligne */
+    --lh-tight: 1.25;    /* titres */
+    --lh-normal: 1.5;
+    --lh-relaxed: 1.6;   /* corps de texte (valeur globale déjà en place) */
 }
 
 /* ============================================================
@@ -79,7 +115,8 @@ body {
     background: var(--bg-body);
     color: var(--text-primary);
     font-family: var(--font-family);
-    line-height: 1.6;
+    font-size: var(--font-size-base);
+    line-height: var(--lh-relaxed);
     min-height: 100vh;
 }
 
@@ -95,18 +132,18 @@ a:hover {
 
 h1, h2, h3, h4, h5, h6 {
     color: var(--text-primary);
-    font-family: var(--font-heading);
+    font-family: var(--font-family);
     letter-spacing: -0.01em;
-    line-height: 1.25;
+    line-height: var(--lh-tight);
     margin-bottom: var(--spacing-md);
 }
 
-h1 { font-size: 2rem; font-weight: 800; }
-h2 { font-size: 1.65rem; font-weight: 700; }
-h3 { font-size: 1.35rem; font-weight: 700; }
-h4 { font-size: 1.2rem; font-weight: 600; }
-h5 { font-size: 1.1rem; font-weight: 600; }
-h6 { font-size: 1rem; font-weight: 600; }
+h1 { font-size: var(--font-size-xxl); font-weight: var(--fw-black); }
+h2 { font-size: var(--font-size-xl); font-weight: var(--fw-bold); }
+h3 { font-size: var(--font-size-lg); font-weight: var(--fw-bold); }
+h4 { font-size: var(--font-size-md); font-weight: var(--fw-semibold); }
+h5 { font-size: var(--font-size-base); font-weight: var(--fw-semibold); }
+h6 { font-size: var(--font-size-sm); font-weight: var(--fw-semibold); }
 
 p {
     margin-bottom: var(--spacing-md);
@@ -341,7 +378,7 @@ button:focus-visible,
 ============================================================ */
 .form-label {
     color: var(--text-primary);
-    font-weight: 650;
+    font-weight: var(--fw-semibold);
     margin-bottom: var(--spacing-xs);
 }
 

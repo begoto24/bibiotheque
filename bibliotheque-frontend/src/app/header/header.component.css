@@ -42,7 +42,9 @@
 }
 
 .brand-text {
-  font-family: var(--font-heading);
+  /* --font-heading a été retiré (doublon exact de --font-family — voir
+     styles.css) ; sera revu en profondeur avec le reste de header/topbar. */
+  font-family: var(--font-family);
   font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.02em;
