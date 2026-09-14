@@ -102,7 +102,7 @@
 }
 
 .calendar-day--today .calendar-day-number {
-  color: var(--primary);
+  color: var(--primary-text);
   font-weight: 800;
 }
 
@@ -238,7 +238,7 @@
 
 .calendar-shortcut-link {
   align-items: center;
-  color: var(--primary);
+  color: var(--primary-text);
   display: inline-flex;
   font-weight: 600;
   font-size: 0.9rem;

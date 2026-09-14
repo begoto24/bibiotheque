@@ -21,6 +21,16 @@
     --danger-dark: #C0392B;       /* Rouge foncé - Hover/actif sur danger */
     --info: var(--primary-light); /* Bordeaux clair - Informations / statut emprunté */
 
+    /* Bordeaux utilisé comme TEXTE/contour (liens, titres de tableau, bouton
+       outline, badges...) — distinct de --primary/--primary-dark qui servent
+       de FOND (sidebar, boutons pleins). Séparé exprès : en thème sombre, le
+       bordeaux-fond de la sidebar reste inchangé (design déjà validé) tandis
+       que le bordeaux-texte doit s'éclaircir pour rester lisible sur un fond
+       sombre. Identique à --primary/--primary-dark en thème clair (aucun
+       changement visuel par défaut). */
+    --primary-text: var(--primary);
+    --primary-text-dark: var(--primary-dark);
+
     /* Couleurs de fond */
     --bg-body: #F8F9FA;           /* Fond général */
     --bg-card: #FFFFFF;           /* Fond des cartes */
@@ -103,6 +113,162 @@
 }
 
 /* ============================================================
+   1bis. THÈME SOMBRE
+   Redéfinit uniquement les tokens qui doivent changer (surfaces, texte,
+   bordures, ombres, + le bordeaux-texte --primary-text/-dark) — deux fois :
+   une fois sous prefers-color-scheme (préférence système, tant que
+   l'utilisateur n'a rien choisi explicitement) et une fois sous
+   [data-theme="dark"] (choix explicite posé par le bouton du topbar,
+   toujours prioritaire dans les deux sens via :root[data-theme="light"]).
+
+   --primary/--primary-dark (fond de la sidebar, boutons pleins) restent
+   VOLONTAIREMENT inchangés : la sidebar bordeaux ne doit pas varier avec
+   le thème (déjà le cas avant ce chantier). Seul le bordeaux utilisé
+   comme texte/contour est éclairci ici.
+============================================================ */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --primary-text: #D18FA0;
+        --primary-text-dark: #E3AEBB;
+        --bg-body: #17141a;
+        --bg-card: #221d24;
+        --bg-muted: #2b2530;
+        --text-primary: #F1EDF0;
+        --text-secondary: #B6ADB4;
+        --border: #3a323d;
+        --overlay: rgba(0, 0, 0, 0.6);
+        --overlay-subtle: rgba(255, 255, 255, 0.06);
+        --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+        --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 20px 44px rgba(0, 0, 0, 0.5);
+    }
+}
+
+:root[data-theme="dark"] {
+    --primary-text: #D18FA0;
+    --primary-text-dark: #E3AEBB;
+    --bg-body: #17141a;
+    --bg-card: #221d24;
+    --bg-muted: #2b2530;
+    --text-primary: #F1EDF0;
+    --text-secondary: #B6ADB4;
+    --border: #3a323d;
+    --overlay: rgba(0, 0, 0, 0.6);
+    --overlay-subtle: rgba(255, 255, 255, 0.06);
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 20px 44px rgba(0, 0, 0, 0.5);
+}
+
+/* Pastilles teintées (badges, icônes de statistique, icônes d'événement du
+   calendrier) : conçues pour un fond clair (teinte ~12-20% + texte saturé
+   foncé). En sombre, même logique inversée : teinte plus opaque + texte
+   éclairci, pour rester lisibles sur --bg-card désormais sombre. Regroupées
+   ici même si les règles claires vivent dans plusieurs fichiers (styles.css,
+   home.component.css, dashboard-calendar.component.css) : un sélecteur de
+   classe global s'applique partout, quel que soit le fichier d'origine. */
+[data-theme="dark"] .badge-success,
+[data-theme="dark"] .badge-available,
+[data-theme="dark"] .stat-icon--success,
+[data-theme="dark"] .calendar-event-icon.calendar-dot--success {
+    background: rgba(39, 174, 96, 0.22) !important;
+    color: #7EE3A8 !important;
+}
+
+[data-theme="dark"] .badge-warning,
+[data-theme="dark"] .badge-pending,
+[data-theme="dark"] .badge-reserved,
+[data-theme="dark"] .stat-icon--warning,
+[data-theme="dark"] .calendar-event-icon.calendar-dot--warning {
+    background: rgba(243, 156, 18, 0.22) !important;
+    color: #F5C56B !important;
+}
+
+[data-theme="dark"] .badge-danger,
+[data-theme="dark"] .badge-overdue {
+    background: rgba(231, 76, 60, 0.22) !important;
+    color: #FF9C90 !important;
+}
+
+[data-theme="dark"] .stat-icon--danger,
+[data-theme="dark"] .calendar-event-icon.calendar-dot--danger {
+    background: rgba(220, 53, 69, 0.22);
+    color: #FF9C90;
+}
+
+[data-theme="dark"] .badge-info,
+[data-theme="dark"] .badge-borrowed,
+[data-theme="dark"] .badge-role-admin,
+[data-theme="dark"] .stat-icon--primary,
+[data-theme="dark"] .calendar-event-icon.calendar-dot--info {
+    background: rgba(139, 74, 90, 0.28) !important;
+    color: var(--primary-text) !important;
+}
+
+[data-theme="dark"] .badge-genre,
+[data-theme="dark"] .stat-icon--accent {
+    background: rgba(143, 162, 131, 0.26) !important;
+    color: #C3D4B7 !important;
+}
+
+/* Icônes rondes sur fond teinté sauge (dialogue de confirmation, en-têtes de
+   formulaire de modification livre/utilisateur) — même logique. */
+[data-theme="dark"] .dialog-icon,
+[data-theme="dark"] .form-title-icon,
+[data-theme="dark"] .feature-icon-chip {
+    background: rgba(143, 162, 131, 0.22) !important;
+    color: #C3D4B7 !important;
+}
+
+[data-theme="dark"] .dialog-icon--danger {
+    background: rgba(231, 76, 60, 0.22) !important;
+    color: #FF9C90 !important;
+}
+
+/* Petit point coloré des jours du calendrier (pas l'icône du panneau agenda,
+   déjà couverte ci-dessus) : le bordeaux plein est trop proche du fond sombre
+   des cellules pour rester visible. */
+[data-theme="dark"] .calendar-dot--info {
+    background: var(--primary-text);
+}
+
+/* Alertes (.alert-info/success/danger/warning) : mêmes pastels foncés que
+   les badges, même correctif. */
+[data-theme="dark"] .alert-info {
+    background: rgba(139, 74, 90, 0.22);
+    border-color: rgba(139, 74, 90, 0.4);
+    color: var(--primary-text);
+}
+
+[data-theme="dark"] .alert-success {
+    background: rgba(39, 174, 96, 0.18);
+    border-color: rgba(39, 174, 96, 0.35);
+    color: #7EE3A8;
+}
+
+[data-theme="dark"] .alert-danger {
+    background: rgba(231, 76, 60, 0.18);
+    border-color: rgba(231, 76, 60, 0.4);
+    color: #FF9C90;
+}
+
+[data-theme="dark"] .alert-warning {
+    background: rgba(243, 156, 18, 0.18);
+    border-color: rgba(243, 156, 18, 0.4);
+    color: #F5C56B;
+}
+
+/* Menu déroulant (app-select) : options survolées/actives sur --bg-card sombre. */
+[data-theme="dark"] .app-select-option:hover {
+    background: rgba(143, 162, 131, 0.22);
+}
+
+[data-theme="dark"] .app-select-option.active {
+    background: rgba(139, 74, 90, 0.28);
+    color: var(--primary-text);
+}
+
+/* ============================================================
    2. RESET & BASE
 ============================================================ */
 * {
@@ -127,13 +293,19 @@ body {
 }
 
 a {
-    color: var(--primary);
+    color: var(--primary-text);
     text-decoration: none;
     transition: color var(--transition);
 }
 
 a:hover {
-    color: var(--primary-dark);
+    color: var(--primary-text-dark);
+}
+
+/* Bootstrap fixe .text-muted en gris foncé en dur (calibré pour un fond
+   clair) : illisible en thème sombre sans ce reset sur notre --text-secondary. */
+.text-muted {
+    color: var(--text-secondary) !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -367,18 +539,18 @@ button:focus-visible,
 }
 
 .btn-outline {
-    --bs-btn-color: var(--primary);
+    --bs-btn-color: var(--primary-text);
     --bs-btn-bg: transparent;
-    --bs-btn-border-color: var(--primary);
+    --bs-btn-border-color: var(--primary-text);
     --bs-btn-hover-color: var(--text-light);
     --bs-btn-hover-bg: var(--primary);
     --bs-btn-hover-border-color: var(--primary);
     --bs-btn-active-color: var(--text-light);
     --bs-btn-active-bg: var(--primary);
     --bs-btn-active-border-color: var(--primary);
-    --bs-btn-disabled-color: var(--primary);
+    --bs-btn-disabled-color: var(--primary-text);
     --bs-btn-disabled-bg: transparent;
-    --bs-btn-disabled-border-color: var(--primary);
+    --bs-btn-disabled-border-color: var(--primary-text);
     --bs-btn-border-width: 2px;
 }
 
@@ -393,12 +565,22 @@ button:focus-visible,
 
 .form-control,
 .form-select {
+    /* Bootstrap fixe son propre fond/texte en dur (calibrés pour un thème
+       clair) sans ces deux lignes : mêmes symptômes et même raison que le
+       reset --bs-table-bg plus haut. */
+    background-color: var(--bg-card);
+    color: var(--text-primary);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     font-size: 1rem;
     min-height: 44px;
     padding: var(--spacing-sm) var(--spacing-md);
     transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.form-control::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
 }
 
 .form-control:focus,
@@ -437,6 +619,11 @@ button:focus-visible,
 }
 
 .table {
+    /* Bootstrap fixe --bs-table-bg en dur (opaque, calibré pour un fond
+       clair) : sans ce reset, .table td restait blanc en thème sombre alors
+       que .table th (qui, lui, définit déjà "background: var(--bg-card)"
+       plus bas) suivait correctement le thème. */
+    --bs-table-bg: var(--bg-card);
     margin-bottom: 0;
     min-width: 720px;
     width: 100%;
@@ -446,8 +633,8 @@ button:focus-visible,
 
 .table th {
     background: var(--bg-card);
-    border-bottom: 2px solid var(--primary);
-    color: var(--primary);
+    border-bottom: 2px solid var(--primary-text);
+    color: var(--primary-text);
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -653,7 +840,7 @@ button:focus-visible,
 
 .modal-progress::after {
     animation: modal-progress-sweep 1.1s ease-in-out infinite;
-    background: var(--primary);
+    background: var(--primary-text);
     content: '';
     height: 100%;
     position: absolute;
@@ -770,7 +957,7 @@ button:focus-visible,
     display: inline-block;
     width: 2rem;
     height: 2rem;
-    border: 0.25rem solid var(--primary);
+    border: 0.25rem solid var(--primary-text);
     border-right-color: transparent;
     border-radius: 50%;
     animation: spinner 0.75s linear infinite;

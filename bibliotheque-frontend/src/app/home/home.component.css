@@ -40,7 +40,7 @@
 
 .hero-logo {
   font-size: 3.5rem;
-  color: var(--primary);
+  color: var(--primary-text);
   margin-bottom: var(--spacing-md);
 }
 
