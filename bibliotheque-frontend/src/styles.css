@@ -752,7 +752,10 @@ button:focus-visible,
 
 /* Skeleton loader (shimmer) — état de chargement pour listes/tableaux */
 .skeleton {
-    background: linear-gradient(90deg, var(--bg-muted) 25%, rgba(45, 52, 54, 0.06) 37%, var(--bg-muted) 63%);
+    /* --overlay-subtle est en 0.08 (pensé pour un survol) contre 0.06 ici à
+       l'origine — écart invisible sur un dégradé animé, pas la peine d'un
+       3e palier d'opacité juste pour cet unique usage. */
+    background: linear-gradient(90deg, var(--bg-muted) 25%, var(--overlay-subtle) 37%, var(--bg-muted) 63%);
     background-size: 400% 100%;
     border-radius: var(--radius-sm);
     display: block;
