@@ -14,25 +14,25 @@ Aucun code ne vous sera donné. Le projet existant est votre modèle : lisez com
 
 ### Reservation
 
-| Champ | Type | Contraintes |
-|---|---|---|
-| id | identifiant généré | |
-| livre | relation vers Livre | obligatoire |
-| adherent | relation vers l'entité utilisateur du projet | obligatoire |
-| dateReservation | date et heure | générée par le serveur, jamais fournie par le client |
-| dateExpiration | date et heure | calculée, voir RG-04 |
-| statut | énumération | EN_ATTENTE, DISPONIBLE, ANNULEE, EXPIREE, HONOREE |
+| Champ                      | Type                                         | Contraintes |
+|----------------------------|----------------------------------------------|-------------|
+| id                         | identifiant généré                           |             |
+| livre                      | relation vers Livre                          | obligatoire |
+| adherent                   | relation vers l'entité utilisateur du projet | obligatoire |
+| dateReservation            | date et heure                                | générée par le serveur, jamais fournie par le client |
+| dateExpiration             | date et heure                                | calculée, voir RG-04 |
+| statut                     | énumération                                  | EN_ATTENTE, DISPONIBLE, ANNULEE, EXPIREE, HONOREE |
 
 ## Les règles de gestion
 
-| Réf. | Règle |
-|---|---|
+| Réf.  | Règle                                                                                  |
+|-------|----------------------------------------------------------------------------------------|
 | RG-01 | On ne peut réserver qu'un livre indisponible. Réserver un livre disponible est refusé. |
-| RG-02 | Un adhérent ne peut avoir qu'une seule réservation active sur un même livre. |
-| RG-03 | Un adhérent ne peut pas dépasser 3 réservations actives simultanées. |
-| RG-04 | dateExpiration = dateReservation + 7 jours. Calculée côté serveur. |
-| RG-05 | Une réservation ne peut être annulée que si son statut est EN_ATTENTE ou DISPONIBLE. |
-| RG-06 | Une réservation ANNULEE, EXPIREE ou HONOREE ne peut plus changer d'état. |
+| RG-02 | Un adhérent ne peut avoir qu'une seule réservation active sur un même livre.           |
+| RG-03 | Un adhérent ne peut pas dépasser 3 réservations actives simultanées.                   |
+| RG-04 | dateExpiration = dateReservation + 7 jours. Calculée côté serveur.                     |
+| RG-05 | Une réservation ne peut être annulée que si son statut est EN_ATTENTE ou DISPONIBLE.   |
+| RG-06 | Une réservation ANNULEE, EXPIREE ou HONOREE ne peut plus changer d'état.               |
 
 Une réservation est dite **active** si son statut est EN_ATTENTE ou DISPONIBLE.
 
