@@ -619,11 +619,21 @@ button:focus-visible,
 }
 
 .table {
-    /* Bootstrap fixe --bs-table-bg en dur (opaque, calibré pour un fond
-       clair) : sans ce reset, .table td restait blanc en thème sombre alors
-       que .table th (qui, lui, définit déjà "background: var(--bg-card)"
-       plus bas) suivait correctement le thème. */
+    /* Bootstrap fixe plusieurs de ses variables de couleur de texte en dur,
+       toutes calées sur --bs-emphasis-color (#000 en thème clair, jamais
+       redéfini par nous) : --bs-table-color (cellules normales),
+       --bs-table-striped-color (lignes impaires de .table-striped, PRIORITAIRE
+       sur --bs-table-color dans le calcul de Bootstrap — l'avoir raté au
+       premier correctif est exactement pourquoi Adhérent/Date réservation/
+       Date expiration/Username/Auteur restaient noirs sur une ligne sur deux
+       en thème sombre), --bs-table-hover-color et --bs-table-active-color.
+       --bs-table-bg pareil, mais seulement pour le fond (.table th définit
+       déjà son propre fond/texte plus bas, pas concerné par ces resets). */
     --bs-table-bg: var(--bg-card);
+    --bs-table-color: var(--text-primary);
+    --bs-table-striped-color: var(--text-primary);
+    --bs-table-hover-color: var(--text-primary);
+    --bs-table-active-color: var(--text-primary);
     margin-bottom: 0;
     min-width: 720px;
     width: 100%;
