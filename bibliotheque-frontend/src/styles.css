@@ -64,12 +64,17 @@
     /* Transition standard des interactions */
     --transition: 0.3s ease;
 
-    /* Échelle z-index — deux couches d'overlay dans l'app : le menu déroulant
-       maison (app-select) doit pouvoir s'ouvrir À L'INTÉRIEUR d'une modale,
-       donc rester en dessous d'elle. Nommé pour que ce ne soit plus un hasard
-       de nombres (1050 vs 1055) mais une relation explicite. */
-    --z-dropdown: 1050;
-    --z-modal: 1055;
+    /* Échelle z-index — ordre d'empilement complet de l'app, du plus bas au
+       plus haut. Chaque palier documente pourquoi il est où il est, plutôt
+       que des nombres magiques recopiés (1020/1029/1030/1050/1055 existaient
+       déjà séparément dans header/topbar/select/modal, sans relation
+       explicite entre eux). */
+    --z-topbar: 1020;         /* barre de recherche desktop, au-dessus du contenu de page normal */
+    --z-mobile-topbar: 1029;  /* barre compacte mobile + fond du tiroir sidebar */
+    --z-sidebar: 1030;        /* sidebar elle-même (tiroir mobile ou colonne fixe desktop) */
+    --z-dropdown: 1050;       /* menu déroulant maison (app-select) — doit pouvoir s'ouvrir
+                                  À L'INTÉRIEUR d'une modale, donc rester sous elle */
+    --z-modal: 1055;          /* modales et dialogues de confirmation */
 
     /* Typographie */
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
