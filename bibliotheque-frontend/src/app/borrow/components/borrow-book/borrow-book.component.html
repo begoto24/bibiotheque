@@ -40,7 +40,7 @@
             </span>
           </td>
           <td data-label="Action">
-            <button (click)="borrowBook(book.bookId)" class="btn btn-success btn-sm" [disabled]="loading">
+            <button (click)="askBorrow(book)" class="btn btn-success btn-sm" [disabled]="loading || book.noOfCopies === 0">
               <i class="ph ph-hand-heart" aria-hidden="true"></i> Emprunter
             </button>
           </td>
@@ -48,4 +48,15 @@
       </tbody>
     </table>
   </div>
+
+  <app-confirm-dialog
+    [open]="!!pendingBorrow"
+    variant="default"
+    title="Emprunter ce livre ?"
+    [message]="'« ' + (pendingBorrow?.bookName || '') + ' » de ' + (pendingBorrow?.bookAuthor || '') + '. La date de retour sera fixée à 7 jours à partir d\'aujourd\'hui.'"
+    confirmLabel="Emprunter"
+    cancelLabel="Annuler"
+    (confirmed)="confirmBorrow()"
+    (cancelled)="dismissBorrow()">
+  </app-confirm-dialog>
 </main>

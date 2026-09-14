@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ConfirmDialogComponent } from '../_shared/confirm-dialog/confirm-dialog.component';
 import { BorrowRoutingModule } from './borrow-routing.module';
 import { BorrowBookComponent } from './components/borrow-book/borrow-book.component';
 import { ReturnBookComponent } from './components/return-book/return-book.component';
@@ -16,7 +17,8 @@ import { ReturnBookComponent } from './components/return-book/return-book.compon
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    BorrowRoutingModule
+    BorrowRoutingModule,
+    ConfirmDialogComponent
   ]
 })
 export class BorrowModule { }
