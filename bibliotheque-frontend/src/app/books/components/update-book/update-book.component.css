@@ -17,14 +17,14 @@
 
 .form-subtitle {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
   margin: var(--spacing-xs) 0 0;
 }
 
 .form-section-title {
   color: var(--text-secondary);
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: var(--font-size-xs);
+  font-weight: var(--fw-bold);
   letter-spacing: 0.04em;
   margin-bottom: var(--spacing-md);
   text-transform: uppercase;

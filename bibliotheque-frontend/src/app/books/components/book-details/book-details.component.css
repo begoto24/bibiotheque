@@ -1,6 +1,6 @@
 .cell-strong {
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 
 .badge i {
