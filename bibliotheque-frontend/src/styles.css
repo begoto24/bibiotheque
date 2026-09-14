@@ -229,7 +229,7 @@ button:focus-visible,
     align-items: center;
     border-radius: var(--radius-sm);
     display: inline-flex;
-    font-weight: 600;
+    font-weight: var(--fw-semibold);
     gap: var(--spacing-xs);
     justify-content: center;
     line-height: 1;
@@ -269,7 +269,7 @@ button:focus-visible,
    Voir / Modifier / Supprimer aient tous le même gabarit — seule la largeur
    varie légèrement selon le texte, contenue par un min-width commun. */
 .btn-sm {
-    font-size: 0.85rem;
+    font-size: var(--font-size-sm);
     min-height: 36px;
     min-width: 96px;
     padding: 0 var(--spacing-md);
@@ -317,11 +317,11 @@ button:focus-visible,
     --bs-btn-bg: var(--success);
     --bs-btn-border-color: var(--success);
     --bs-btn-hover-color: var(--text-light);
-    --bs-btn-hover-bg: #219a52;
-    --bs-btn-hover-border-color: #219a52;
+    --bs-btn-hover-bg: var(--success-dark);
+    --bs-btn-hover-border-color: var(--success-dark);
     --bs-btn-active-color: var(--text-light);
-    --bs-btn-active-bg: #219a52;
-    --bs-btn-active-border-color: #219a52;
+    --bs-btn-active-bg: var(--success-dark);
+    --bs-btn-active-border-color: var(--success-dark);
     --bs-btn-disabled-color: var(--text-light);
     --bs-btn-disabled-bg: var(--success);
     --bs-btn-disabled-border-color: var(--success);
@@ -332,26 +332,29 @@ button:focus-visible,
     --bs-btn-bg: var(--danger);
     --bs-btn-border-color: var(--danger);
     --bs-btn-hover-color: var(--text-light);
-    --bs-btn-hover-bg: #c0392b;
-    --bs-btn-hover-border-color: #c0392b;
+    --bs-btn-hover-bg: var(--danger-dark);
+    --bs-btn-hover-border-color: var(--danger-dark);
     --bs-btn-active-color: var(--text-light);
-    --bs-btn-active-bg: #c0392b;
-    --bs-btn-active-border-color: #c0392b;
+    --bs-btn-active-bg: var(--danger-dark);
+    --bs-btn-active-border-color: var(--danger-dark);
     --bs-btn-disabled-color: var(--text-light);
     --bs-btn-disabled-bg: var(--danger);
     --bs-btn-disabled-border-color: var(--danger);
 }
 
 .btn-warning {
+    /* #1f2933 : texte quasi-noir requis pour le contraste AA sur fond orange
+       (--text-primary est trop clair pour ce fond précis) — distinct de
+       --warning-dark, qui lui sert de fond au survol. */
     --bs-btn-color: #1f2933;
     --bs-btn-bg: var(--warning);
     --bs-btn-border-color: var(--warning);
     --bs-btn-hover-color: #1f2933;
-    --bs-btn-hover-bg: #d68910;
-    --bs-btn-hover-border-color: #d68910;
+    --bs-btn-hover-bg: var(--warning-dark);
+    --bs-btn-hover-border-color: var(--warning-dark);
     --bs-btn-active-color: #1f2933;
-    --bs-btn-active-bg: #d68910;
-    --bs-btn-active-border-color: #d68910;
+    --bs-btn-active-bg: var(--warning-dark);
+    --bs-btn-active-border-color: var(--warning-dark);
     --bs-btn-disabled-color: #1f2933;
     --bs-btn-disabled-bg: var(--warning);
     --bs-btn-disabled-border-color: var(--warning);
@@ -965,7 +968,7 @@ button:focus-visible,
     .form-card { padding: var(--spacing-md); }
 
     .btn {
-        font-size: 0.9rem;
+        font-size: var(--font-size-sm);
         min-height: 42px;
     }
 }
