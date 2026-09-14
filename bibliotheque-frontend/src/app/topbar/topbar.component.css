@@ -43,6 +43,27 @@
   color: var(--text-secondary);
 }
 
+.theme-toggle {
+  align-items: center;
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 1.05rem;
+  height: 40px;
+  justify-content: center;
+  transition: background-color var(--transition), color var(--transition);
+  width: 40px;
+}
+
+.theme-toggle:hover {
+  background: var(--accent);
+  color: var(--secondary);
+}
+
 .topbar-search-input {
   background: transparent;
   border: 0;

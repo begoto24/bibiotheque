@@ -10,6 +10,16 @@
       aria-label="Rechercher">
   </div>
 
+  <button
+    type="button"
+    class="theme-toggle"
+    (click)="toggleTheme()"
+    [attr.aria-pressed]="isDarkTheme()"
+    [attr.aria-label]="isDarkTheme() ? 'Passer au thème clair' : 'Passer au thème sombre'"
+    [title]="isDarkTheme() ? 'Thème clair' : 'Thème sombre'">
+    <i class="ph" [ngClass]="isDarkTheme() ? 'ph-sun' : 'ph-moon'" aria-hidden="true"></i>
+  </button>
+
   <div class="topbar-profile" *ngIf="isLoggedIn(); else loginLink">
     <button
       class="profile-chip"

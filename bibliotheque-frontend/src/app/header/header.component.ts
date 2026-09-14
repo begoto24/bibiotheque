@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ThemeService } from '../_core/services/theme.service';
 import { UserAuthService } from '../_service/user-auth.service';
 
 const RAIL_STORAGE_KEY = 'sidebarRailCollapsed';
@@ -18,7 +19,8 @@ export class HeaderComponent {
 
   constructor(
     private userAuthService: UserAuthService,
-    private router: Router
+    private router: Router,
+    private themeService: ThemeService
   ) { }
 
   toggleMenu(): void {
@@ -44,6 +46,14 @@ export class HeaderComponent {
 
   getUserName(): string {
     return this.userAuthService.getName() || 'Utilisateur';
+  }
+
+  isDarkTheme(): boolean {
+    return this.themeService.isDark();
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggle();
   }
 
   logout(): void {

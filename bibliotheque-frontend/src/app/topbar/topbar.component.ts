@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
 import { SearchService } from '../_core/services/search.service';
+import { ThemeService } from '../_core/services/theme.service';
 import { UserAuthService } from '../_service/user-auth.service';
 
 /**
@@ -30,7 +31,8 @@ export class TopbarComponent implements OnInit, OnDestroy {
     private userAuthService: UserAuthService,
     private router: Router,
     private searchService: SearchService,
-    private elementRef: ElementRef<HTMLElement>
+    private elementRef: ElementRef<HTMLElement>,
+    private themeService: ThemeService
   ) { }
 
   ngOnInit(): void {
@@ -68,6 +70,14 @@ export class TopbarComponent implements OnInit, OnDestroy {
   onSearchInput(value: string): void {
     this.searchQuery = value;
     this.searchService.setQuery(value);
+  }
+
+  isDarkTheme(): boolean {
+    return this.themeService.isDark();
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggle();
   }
 
   isLoggedIn(): boolean {

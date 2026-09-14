@@ -68,6 +68,16 @@
   </nav>
 
   <div class="sidebar-footer">
+    <button
+      class="sidebar-link"
+      type="button"
+      (click)="toggleTheme()"
+      [attr.aria-pressed]="isDarkTheme()"
+      [title]="isRailCollapsed ? (isDarkTheme() ? 'Thème clair' : 'Thème sombre') : ''">
+      <i class="ph" [ngClass]="isDarkTheme() ? 'ph-sun' : 'ph-moon'" aria-hidden="true"></i>
+      <span>{{ isDarkTheme() ? 'Thème clair' : 'Thème sombre' }}</span>
+    </button>
+
     <a *ngIf="!isLoggedIn()" class="sidebar-link" routerLink="/login" routerLinkActive="active" (click)="closeMenu()">
       <i class="ph ph-sign-in" aria-hidden="true"></i> <span>Connexion</span>
     </a>
