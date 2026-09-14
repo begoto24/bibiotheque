@@ -20,6 +20,7 @@ export class RegistrationComponent {
   user: Users = new Users();
   submitting = false;
   error = '';
+  successMessage = '';
   isModalOpen = false;
   readonly roleOptions: SelectOption[] = [
     { value: 'Admin', label: 'Admin' },
@@ -37,6 +38,7 @@ export class RegistrationComponent {
   closeModal(): void {
     this.isModalOpen = false;
     this.error = '';
+    this.successMessage = '';
     this.user = new Users();
     clearTimeout(this.autoCloseTimeout);
   }
@@ -53,11 +55,13 @@ export class RegistrationComponent {
   private saveUser(): void {
     this.submitting = true;
     this.error = '';
+    this.successMessage = '';
     this.usersService.createUser(this.user).subscribe({
       next: () => {
         this.submitting = false;
         this.userCreated.emit();
-        this.autoCloseTimeout = setTimeout(() => this.closeModal(), 600);
+        this.successMessage = 'Utilisateur créé avec succès.';
+        this.autoCloseTimeout = setTimeout(() => this.closeModal(), 1200);
       },
       error: error => {
         this.submitting = false;

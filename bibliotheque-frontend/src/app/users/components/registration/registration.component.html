@@ -24,6 +24,8 @@
       </button>
     </div>
 
+    <div class="modal-progress" *ngIf="submitting"></div>
+
     <div class="modal-body">
       <app-form-field label="Nom" icon="fa-user" for="name" [invalid]="name.invalid && name.touched">
         <input
@@ -64,6 +66,10 @@
       <app-form-field label="Rôle" icon="fa-user-tag" for="role">
         <app-select id="role" [options]="roleOptions" [(ngModel)]="user.role[0].roleName" name="role"></app-select>
       </app-form-field>
+
+      <div *ngIf="successMessage" class="alert alert-success mb-0">
+        <i class="fas fa-check-circle" aria-hidden="true"></i> {{ successMessage }}
+      </div>
 
       <div *ngIf="error" class="alert alert-danger mb-0">
         <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
