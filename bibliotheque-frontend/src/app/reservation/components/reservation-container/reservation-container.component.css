@@ -16,7 +16,7 @@
 .filters-section {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
@@ -36,8 +36,8 @@
 
 .filter-label {
   display: block;
-  font-weight: 600;
-  font-size: 0.85rem;
+  font-weight: var(--fw-semibold);
+  font-size: var(--font-size-sm);
   margin-bottom: var(--spacing-xs);
   color: var(--text-secondary);
 }

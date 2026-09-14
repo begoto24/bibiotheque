@@ -27,6 +27,6 @@
 
 .status-hint-text {
   color: var(--text-secondary);
-  font-size: 0.82rem;
+  font-size: var(--font-size-sm);
 }
 
