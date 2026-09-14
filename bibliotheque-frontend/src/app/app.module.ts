@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AuthGuard } from './_auth/auth.guard';
 import { AuthInterceptor } from './_auth/auth.interceptor';
 import { ButtonComponent } from './_shared/button/button.component';
+import { DashboardCalendarComponent } from './_shared/dashboard-calendar/dashboard-calendar.component';
 import { SkeletonComponent } from './_shared/skeleton/skeleton.component';
 import { ErrorHandlerService } from './_core/services/error-handler.service';
 import { LoadingService } from './_core/services/loading.service';
@@ -34,6 +35,7 @@ import { TopbarComponent } from './topbar/topbar.component';
     FormsModule,
     ReactiveFormsModule,
     ButtonComponent,
+    DashboardCalendarComponent,
     SkeletonComponent,
     TopbarComponent
   ],

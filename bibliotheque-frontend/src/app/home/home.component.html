@@ -52,6 +52,8 @@
     <app-button variant="secondary" icon="ph-users" routerLink="/users">Gérer les utilisateurs</app-button>
     <app-button variant="outline" icon="ph-calendar-check" routerLink="/reservations">Voir les réservations</app-button>
   </div>
+
+  <app-dashboard-calendar></app-dashboard-calendar>
 </main>
 
 <ng-template #adherentOrPublicHome>
@@ -102,6 +104,8 @@
       <app-button variant="secondary" icon="ph-hand-heart" routerLink="/borrow">Emprunter un livre</app-button>
       <app-button variant="outline" icon="ph-arrow-counter-clockwise" routerLink="/borrow/return">Rendre un livre</app-button>
     </div>
+
+    <app-dashboard-calendar></app-dashboard-calendar>
   </main>
 </ng-template>
 

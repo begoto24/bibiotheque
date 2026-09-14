@@ -1,0 +1,134 @@
+<section class="calendar-card" aria-labelledby="dashboardCalendarTitle">
+  <div class="calendar-header">
+    <h3 class="section-title calendar-title" id="dashboardCalendarTitle">
+      <i class="ph ph-calendar-check" aria-hidden="true"></i> Calendrier
+    </h3>
+    <div class="calendar-nav">
+      <button type="button" class="calendar-nav-btn" (click)="previousMonth()" aria-label="Mois précédent">
+        <i class="ph ph-caret-double-left" aria-hidden="true"></i>
+      </button>
+      <span class="calendar-month-label">{{ monthLabel }}</span>
+      <button type="button" class="calendar-nav-btn" (click)="nextMonth()" aria-label="Mois suivant">
+        <i class="ph ph-caret-double-right" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-outline btn-sm calendar-today-btn" (click)="goToToday()">Aujourd'hui</button>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    <i class="ph ph-warning-circle" aria-hidden="true"></i> {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="calendar-skeleton">
+    <app-skeleton shape="block" height="280px"></app-skeleton>
+  </div>
+
+  <ng-container *ngIf="!loading && !error">
+    <div class="calendar-weekdays" aria-hidden="true">
+      <span *ngFor="let label of weekdayLabels">{{ label }}</span>
+    </div>
+
+    <div class="calendar-grid" role="grid">
+      <button
+        type="button"
+        role="gridcell"
+        *ngFor="let day of days"
+        class="calendar-day"
+        [class.calendar-day--outside]="!day.inCurrentMonth"
+        [class.calendar-day--today]="day.isToday"
+        [class.calendar-day--selected]="day.dateKey === selectedDateKey"
+        [attr.aria-current]="day.isToday ? 'date' : null"
+        [attr.aria-pressed]="day.dateKey === selectedDateKey"
+        (click)="selectDay(day)">
+        <span class="calendar-day-number">{{ day.dayNumber }}</span>
+        <span class="calendar-day-dots" *ngIf="day.events.length">
+          <span
+            *ngFor="let event of day.events.slice(0, 3)"
+            class="calendar-dot"
+            [ngClass]="'calendar-dot--' + event.variant"
+            aria-hidden="true"></span>
+          <span class="calendar-day-more" *ngIf="day.events.length > 3">+{{ day.events.length - 3 }}</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="calendar-agenda">
+      <h4 class="calendar-agenda-title">{{ selectedDateLabel }}</h4>
+
+      <div *ngIf="actionSuccess" class="alert alert-success mb-0">
+        <i class="ph ph-check-circle" aria-hidden="true"></i> {{ actionSuccess }}
+      </div>
+      <div *ngIf="actionError" class="alert alert-danger mb-0">
+        <i class="ph ph-warning-circle" aria-hidden="true"></i> {{ actionError }}
+      </div>
+
+      <ul class="calendar-event-list" *ngIf="selectedDay && selectedDay.events.length; else noEvents">
+        <li class="calendar-event" *ngFor="let event of selectedDay.events">
+          <span class="calendar-event-icon" [ngClass]="'calendar-dot--' + event.variant">
+            <i class="ph" [ngClass]="event.icon" aria-hidden="true"></i>
+          </span>
+          <div class="calendar-event-body">
+            <app-badge [variant]="event.variant">{{ event.label }}</app-badge>
+            <p class="calendar-event-text">
+              <strong>{{ event.bookTitle }}</strong>
+              <ng-container *ngIf="event.personName"> — {{ event.personName }}</ng-container>
+            </p>
+          </div>
+          <app-button
+            *ngIf="(event.type === 'reservation-expires' || event.type === 'reservation-created') && event.canAct"
+            variant="outline"
+            size="sm"
+            icon="ph-x"
+            (clicked)="askCancelReservation(event)">
+            Annuler
+          </app-button>
+          <app-button
+            *ngIf="event.type === 'borrow-due' && event.canAct"
+            variant="outline"
+            size="sm"
+            icon="ph-check"
+            (clicked)="askMarkReturned(event)">
+            Marquer rendu
+          </app-button>
+        </li>
+      </ul>
+
+      <ng-template #noEvents>
+        <p class="calendar-empty-text">
+          <i class="ph ph-tray" aria-hidden="true"></i> Rien de prévu ce jour-là.
+        </p>
+      </ng-template>
+
+      <div class="calendar-shortcuts" *ngIf="isSelectedToday">
+        <a class="calendar-shortcut-link" routerLink="/reservations">
+          <i class="ph ph-plus-circle" aria-hidden="true"></i> Nouvelle réservation
+        </a>
+        <a class="calendar-shortcut-link" routerLink="/borrow" *ngIf="isAdherentView">
+          <i class="ph ph-hand-heart" aria-hidden="true"></i> Emprunter un livre
+        </a>
+      </div>
+    </div>
+  </ng-container>
+
+  <app-confirm-dialog
+    [open]="!!pendingCancel"
+    variant="danger"
+    title="Annuler cette réservation ?"
+    [message]="'La réservation de « ' + (pendingCancel?.bookTitle || '') + ' » pour ' + (pendingCancel?.userName || '') + ' sera annulée.'"
+    confirmLabel="Annuler la réservation"
+    cancelLabel="Retour"
+    (confirmed)="confirmCancelReservation()"
+    (cancelled)="dismissCancelReservation()">
+  </app-confirm-dialog>
+
+  <app-confirm-dialog
+    [open]="!!pendingReturn"
+    variant="default"
+    title="Marquer ce livre comme rendu ?"
+    message="L'exemplaire redeviendra disponible au catalogue."
+    confirmLabel="Confirmer le retour"
+    cancelLabel="Retour"
+    (confirmed)="confirmMarkReturned()"
+    (cancelled)="dismissMarkReturned()">
+  </app-confirm-dialog>
+</section>
