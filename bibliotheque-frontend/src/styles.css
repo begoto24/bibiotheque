@@ -579,7 +579,7 @@ button:focus-visible,
 ============================================================ */
 .modal-backdrop {
     align-items: center;
-    background: rgba(45, 52, 54, 0.55);
+    background: var(--overlay);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
     display: flex;
@@ -587,7 +587,7 @@ button:focus-visible,
     justify-content: center;
     padding: var(--spacing-md);
     position: fixed;
-    z-index: 1055;
+    z-index: var(--z-modal);
     animation: backdrop-in 0.3s ease both;
 }
 
@@ -626,7 +626,7 @@ button:focus-visible,
 .modal-title {
     align-items: center;
     display: flex;
-    font-size: 1.15rem;
+    font-size: var(--font-size-md);
     gap: var(--spacing-sm);
     margin-bottom: 0;
 }
@@ -652,7 +652,7 @@ button:focus-visible,
 }
 
 .modal-close:hover {
-    background: rgba(45, 52, 54, 0.08);
+    background: var(--overlay-subtle);
     color: var(--text-primary);
 }
 
