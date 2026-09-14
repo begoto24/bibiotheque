@@ -58,7 +58,10 @@
   position: absolute;
   right: 0;
   top: 100%;
-  z-index: 1050;
+  /* Volontairement < --z-modal (styles.css) : ce menu doit pouvoir s'ouvrir
+     À L'INTÉRIEUR d'une modale (ex. formulaire de réservation), jamais
+     passer au-dessus d'elle. */
+  z-index: var(--z-dropdown);
 }
 
 /* Pas assez de place en dessous (ex. dernier champ d'une modale) : la liste
