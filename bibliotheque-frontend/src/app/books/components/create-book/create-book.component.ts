@@ -19,6 +19,7 @@ export class CreateBookComponent {
   book: Books = new Books();
   submitting = false;
   error = '';
+  successMessage = '';
   isModalOpen = false;
 
   private autoCloseTimeout?: ReturnType<typeof setTimeout>;
@@ -32,6 +33,7 @@ export class CreateBookComponent {
   closeModal(): void {
     this.isModalOpen = false;
     this.error = '';
+    this.successMessage = '';
     this.book = new Books();
     clearTimeout(this.autoCloseTimeout);
   }
@@ -48,11 +50,17 @@ export class CreateBookComponent {
   private saveBook(): void {
     this.submitting = true;
     this.error = '';
+    this.successMessage = '';
     this.booksService.createBook(this.book).subscribe({
       next: () => {
         this.submitting = false;
         this.bookCreated.emit();
-        this.autoCloseTimeout = setTimeout(() => this.closeModal(), 600);
+        // Le bouton revient à son état normal instantanément (submitting
+        // passe à false) : sans ce message, rien ne montre que ça a marché
+        // avant que la modale ne se referme toute seule — d'où l'impression
+        // de "comportement bizarre" (disparition sans explication).
+        this.successMessage = 'Livre ajouté avec succès.';
+        this.autoCloseTimeout = setTimeout(() => this.closeModal(), 1200);
       },
       error: error => {
         this.submitting = false;
