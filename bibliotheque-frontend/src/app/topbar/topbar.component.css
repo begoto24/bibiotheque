@@ -16,7 +16,7 @@
     padding: var(--spacing-md) var(--spacing-xl);
     position: sticky;
     top: 0;
-    z-index: 1020;
+    z-index: var(--z-topbar);
   }
 }
 
@@ -48,7 +48,7 @@
   border: 0;
   color: var(--text-primary);
   flex: 1;
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
   min-width: 0;
   outline: none;
 }
@@ -68,8 +68,8 @@
   align-items: center;
   color: var(--text-primary);
   display: inline-flex;
-  font-size: 0.98rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--fw-semibold);
   gap: var(--spacing-sm);
   white-space: nowrap;
 }
@@ -86,8 +86,8 @@
   border-radius: 999px;
   color: var(--danger);
   display: inline-flex;
-  font-size: 0.88rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--fw-semibold);
   gap: 6px;
   min-height: 42px;
   padding: 8px 18px;
