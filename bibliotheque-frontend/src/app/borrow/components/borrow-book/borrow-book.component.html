@@ -19,7 +19,6 @@
     <table class="table table-striped responsive-table-card">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Nom</th>
           <th>Auteur</th>
           <th>Genre</th>
@@ -29,7 +28,6 @@
       </thead>
       <tbody>
         <tr *ngFor="let book of books" class="fade-in">
-          <td data-label="ID">{{ book.bookId }}</td>
           <td data-label="Nom"><span class="cell-strong">{{ book.bookName }}</span></td>
           <td data-label="Auteur">{{ book.bookAuthor }}</td>
           <td data-label="Genre">{{ book.bookGenre }}</td>
