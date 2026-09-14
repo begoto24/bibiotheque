@@ -9,7 +9,7 @@
     [attr.aria-expanded]="isOpen"
     (click)="toggle()">
     <span class="app-select-value" [class.app-select-placeholder]="!hasValue">{{ selectedLabel }}</span>
-    <i class="fas fa-chevron-down app-select-caret" aria-hidden="true"></i>
+    <i class="ph ph-caret-down app-select-caret" aria-hidden="true"></i>
   </button>
 
   <ul class="app-select-menu" role="listbox" *ngIf="isOpen">

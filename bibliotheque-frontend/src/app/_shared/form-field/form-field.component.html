@@ -1,11 +1,11 @@
 <div class="form-field-wrapper">
   <label class="form-label" [attr.for]="for">
-    <i *ngIf="icon" class="fas" [ngClass]="icon" aria-hidden="true"></i> {{ label }}
+    <i *ngIf="icon" class="ph" [ngClass]="icon" aria-hidden="true"></i> {{ label }}
   </label>
 
   <ng-content></ng-content>
 
   <div *ngIf="invalid" class="invalid-feedback">
-    <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
+    <i class="ph ph-warning-circle" aria-hidden="true"></i> {{ error }}
   </div>
 </div>

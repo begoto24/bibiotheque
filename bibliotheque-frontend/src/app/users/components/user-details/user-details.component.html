@@ -1,11 +1,11 @@
 <main class="page-shell">
   <div class="page-header">
-    <h2 class="page-title"><i class="fas fa-history" aria-hidden="true"></i> Historique de {{ user.name }}</h2>
+    <h2 class="page-title"><i class="ph ph-clock-counter-clockwise" aria-hidden="true"></i> Historique de {{ user.name }}</h2>
     <p class="page-subtitle">Suivi des emprunts de cet utilisateur.</p>
   </div>
 
   <div *ngIf="!borrow || borrow.length === 0" class="empty-state">
-    <i class="fas fa-inbox empty-icon" aria-hidden="true"></i>
+    <i class="ph ph-tray empty-icon" aria-hidden="true"></i>
     Aucun emprunt enregistré pour cet utilisateur.
   </div>
 
@@ -24,7 +24,7 @@
           <td data-label="Date emprunt">{{ borrower.issueDate }}</td>
           <td data-label="Statut">
             <span class="badge" [ngClass]="borrower.returnDate ? 'badge-available' : 'badge-borrowed'">
-              <i class="fas" [ngClass]="borrower.returnDate ? 'fa-check-circle' : 'fa-clock'" aria-hidden="true"></i>
+              <i class="ph" [ngClass]="borrower.returnDate ? 'ph-check-circle' : 'ph-clock'" aria-hidden="true"></i>
               {{ borrower.returnDate ? ('Rendu le ' + borrower.returnDate) : 'Non rendu' }}
             </span>
           </td>

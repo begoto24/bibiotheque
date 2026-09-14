@@ -4,10 +4,10 @@
     [error]="error"
     [empty]="!loading && !error && reservations.length === 0"
     loadingLabel="Chargement des réservations..."
-    emptyIcon="fa-calendar-plus"
+    emptyIcon="ph-calendar-plus"
     emptyLabel="Aucune réservation."
     (retry)="retry.emit()">
-    <app-button empty-action variant="primary" icon="fa-book" routerLink="/books">Parcourir les livres</app-button>
+    <app-button empty-action variant="primary" icon="ph-book" routerLink="/books">Parcourir les livres</app-button>
 
     <table class="table table-striped responsive-table-card">
       <thead>
@@ -36,12 +36,12 @@
               *ngIf="canCancel(reservation)"
               variant="danger"
               size="sm"
-              icon="fa-times"
+              icon="ph-x"
               (clicked)="askCancelReservation(reservation)">
               Annuler
             </app-button>
             <span *ngIf="!canCancel(reservation)" class="text-muted small">
-              <i class="fas fa-lock" aria-hidden="true"></i> Non annulable
+              <i class="ph ph-lock" aria-hidden="true"></i> Non annulable
             </span>
           </td>
         </tr>

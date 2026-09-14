@@ -1,4 +1,4 @@
-<app-button variant="primary" icon="fa-plus" (clicked)="openModal()">Nouvelle réservation</app-button>
+<app-button variant="primary" icon="ph-plus" (clicked)="openModal()">Nouvelle réservation</app-button>
 
 <div
   *ngIf="isModalOpen"
@@ -16,10 +16,10 @@
     (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h3 class="modal-title" id="reservationModalTitle">
-        <i class="fas fa-plus-circle" aria-hidden="true"></i> Nouvelle réservation
+        <i class="ph ph-plus-circle" aria-hidden="true"></i> Nouvelle réservation
       </h3>
       <button type="button" class="modal-close" (click)="closeModal()" aria-label="Fermer">
-        <i class="fas fa-times" aria-hidden="true"></i>
+        <i class="ph ph-x" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -28,7 +28,7 @@
     <div class="modal-body">
       <div class="form-group mb-3">
         <label for="bookId" class="form-label">
-          <i class="fas fa-book" aria-hidden="true"></i> Livre
+          <i class="ph ph-book" aria-hidden="true"></i> Livre
         </label>
         <app-select
           id="bookId"
@@ -38,14 +38,14 @@
           [invalid]="!!(reservationForm.get('bookId')?.invalid && reservationForm.get('bookId')?.touched)">
         </app-select>
         <div *ngIf="reservationForm.get('bookId')?.invalid && reservationForm.get('bookId')?.touched" class="invalid-feedback">
-          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+          <i class="ph ph-warning-circle" aria-hidden="true"></i>
           Le livre est obligatoire.
         </div>
       </div>
 
       <div class="form-group mb-3" *ngIf="isBibliothecaire">
         <label for="adherentId" class="form-label">
-          <i class="fas fa-user" aria-hidden="true"></i> Adhérent
+          <i class="ph ph-user" aria-hidden="true"></i> Adhérent
         </label>
         <app-select
           id="adherentId"
@@ -55,19 +55,19 @@
           [invalid]="!!(reservationForm.get('adherentId')?.invalid && reservationForm.get('adherentId')?.touched)">
         </app-select>
         <div *ngIf="reservationForm.get('adherentId')?.invalid && reservationForm.get('adherentId')?.touched" class="invalid-feedback">
-          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+          <i class="ph ph-warning-circle" aria-hidden="true"></i>
           L'adhérent est obligatoire.
         </div>
       </div>
 
       <p *ngIf="!isBibliothecaire" class="status-hint-text mb-3">
-        <i class="fas fa-circle-info" aria-hidden="true"></i>
+        <i class="ph ph-info" aria-hidden="true"></i>
         Cette réservation sera faite en votre nom.
       </p>
 
       <div class="status-hint">
         <span class="badge badge-pending">
-          <i class="fas fa-hourglass-half" aria-hidden="true"></i> En attente
+          <i class="ph ph-hourglass" aria-hidden="true"></i> En attente
         </span>
         <span class="status-hint-text">
           Statut initial automatique : la réservation passe à "Disponible" dès que le livre est libéré.
@@ -75,11 +75,11 @@
       </div>
 
       <div *ngIf="successMessage" class="alert alert-success mb-0">
-        <i class="fas fa-check-circle" aria-hidden="true"></i> {{ successMessage }}
+        <i class="ph ph-check-circle" aria-hidden="true"></i> {{ successMessage }}
       </div>
 
       <div *ngIf="serverError" class="alert alert-danger mb-0">
-        <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ serverError }}
+        <i class="ph ph-warning-circle" aria-hidden="true"></i> {{ serverError }}
       </div>
     </div>
 
@@ -88,7 +88,7 @@
       <app-button
         variant="success"
         type="submit"
-        icon="fa-save"
+        icon="ph-floppy-disk"
         [disabled]="reservationForm.invalid"
         [loading]="loading"
         loadingText="Création...">

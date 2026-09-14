@@ -1,4 +1,4 @@
-<app-button variant="primary" icon="fa-user-plus" (clicked)="openModal()">Ajouter un utilisateur</app-button>
+<app-button variant="primary" icon="ph-user-plus" (clicked)="openModal()">Ajouter un utilisateur</app-button>
 
 <div
   *ngIf="isModalOpen"
@@ -17,17 +17,17 @@
     (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h3 class="modal-title" id="createUserModalTitle">
-        <i class="fas fa-user-plus" aria-hidden="true"></i> Ajouter un utilisateur
+        <i class="ph ph-user-plus" aria-hidden="true"></i> Ajouter un utilisateur
       </h3>
       <button type="button" class="modal-close" (click)="closeModal()" aria-label="Fermer">
-        <i class="fas fa-times" aria-hidden="true"></i>
+        <i class="ph ph-x" aria-hidden="true"></i>
       </button>
     </div>
 
     <div class="modal-progress" *ngIf="submitting"></div>
 
     <div class="modal-body">
-      <app-form-field label="Nom" icon="fa-user" for="name" [invalid]="name.invalid && name.touched">
+      <app-form-field label="Nom" icon="ph-user" for="name" [invalid]="name.invalid && name.touched">
         <input
           type="text"
           class="form-control"
@@ -39,7 +39,7 @@
           #name="ngModel">
       </app-form-field>
 
-      <app-form-field label="Username" icon="fa-at" for="username" [invalid]="username.invalid && username.touched">
+      <app-form-field label="Username" icon="ph-at" for="username" [invalid]="username.invalid && username.touched">
         <input
           type="text"
           class="form-control"
@@ -51,7 +51,7 @@
           #username="ngModel">
       </app-form-field>
 
-      <app-form-field label="Mot de passe" icon="fa-lock" for="password" [invalid]="password.invalid && password.touched">
+      <app-form-field label="Mot de passe" icon="ph-lock" for="password" [invalid]="password.invalid && password.touched">
         <input
           type="password"
           class="form-control"
@@ -63,22 +63,22 @@
           #password="ngModel">
       </app-form-field>
 
-      <app-form-field label="Rôle" icon="fa-user-tag" for="role">
+      <app-form-field label="Rôle" icon="ph-identification-badge" for="role">
         <app-select id="role" [options]="roleOptions" [(ngModel)]="user.role[0].roleName" name="role"></app-select>
       </app-form-field>
 
       <div *ngIf="successMessage" class="alert alert-success mb-0">
-        <i class="fas fa-check-circle" aria-hidden="true"></i> {{ successMessage }}
+        <i class="ph ph-check-circle" aria-hidden="true"></i> {{ successMessage }}
       </div>
 
       <div *ngIf="error" class="alert alert-danger mb-0">
-        <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
+        <i class="ph ph-warning-circle" aria-hidden="true"></i> {{ error }}
       </div>
     </div>
 
     <div class="modal-footer">
       <app-button variant="outline" type="button" (clicked)="closeModal()">Annuler</app-button>
-      <app-button variant="success" type="submit" icon="fa-save" [loading]="submitting" loadingText="Enregistrement...">Enregistrer</app-button>
+      <app-button variant="success" type="submit" icon="ph-floppy-disk" [loading]="submitting" loadingText="Enregistrement...">Enregistrer</app-button>
     </div>
   </form>
 </div>

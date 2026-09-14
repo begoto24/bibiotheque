@@ -10,12 +10,12 @@
 </div>
 
 <div *ngIf="!loading && error" class="alert alert-danger d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
-  <span><i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ error }}</span>
+  <span><i class="ph ph-warning-circle" aria-hidden="true"></i> {{ error }}</span>
   <app-button variant="danger" size="sm" (clicked)="retry.emit()">Réessayer</app-button>
 </div>
 
 <div *ngIf="!loading && !error && empty" class="empty-state">
-  <i class="fas empty-icon" [ngClass]="emptyIcon" aria-hidden="true"></i>
+  <i class="ph empty-icon" [ngClass]="emptyIcon" aria-hidden="true"></i>
   <strong>{{ emptyLabel }}</strong>
   <ng-content select="[empty-action]"></ng-content>
 </div>

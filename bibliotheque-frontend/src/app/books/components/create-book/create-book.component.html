@@ -1,4 +1,4 @@
-<app-button variant="primary" icon="fa-plus" (clicked)="openModal()">Ajouter un livre</app-button>
+<app-button variant="primary" icon="ph-plus" (clicked)="openModal()">Ajouter un livre</app-button>
 
 <div
   *ngIf="isModalOpen"
@@ -17,17 +17,17 @@
     (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h3 class="modal-title" id="createBookModalTitle">
-        <i class="fas fa-plus-circle" aria-hidden="true"></i> Ajouter un livre
+        <i class="ph ph-plus-circle" aria-hidden="true"></i> Ajouter un livre
       </h3>
       <button type="button" class="modal-close" (click)="closeModal()" aria-label="Fermer">
-        <i class="fas fa-times" aria-hidden="true"></i>
+        <i class="ph ph-x" aria-hidden="true"></i>
       </button>
     </div>
 
     <div class="modal-progress" *ngIf="submitting"></div>
 
     <div class="modal-body">
-      <app-form-field label="Nom du livre" icon="fa-book" for="bookName" [invalid]="bookName.invalid && bookName.touched">
+      <app-form-field label="Nom du livre" icon="ph-book" for="bookName" [invalid]="bookName.invalid && bookName.touched">
         <input
           type="text"
           class="form-control"
@@ -39,7 +39,7 @@
           #bookName="ngModel">
       </app-form-field>
 
-      <app-form-field label="Auteur" icon="fa-pen" for="bookAuthor" [invalid]="bookAuthor.invalid && bookAuthor.touched">
+      <app-form-field label="Auteur" icon="ph-pencil-simple" for="bookAuthor" [invalid]="bookAuthor.invalid && bookAuthor.touched">
         <input
           type="text"
           class="form-control"
@@ -51,7 +51,7 @@
           #bookAuthor="ngModel">
       </app-form-field>
 
-      <app-form-field label="Genre" icon="fa-tags" for="bookGenre" [invalid]="bookGenre.invalid && bookGenre.touched">
+      <app-form-field label="Genre" icon="ph-tag" for="bookGenre" [invalid]="bookGenre.invalid && bookGenre.touched">
         <input
           type="text"
           class="form-control"
@@ -63,7 +63,7 @@
           #bookGenre="ngModel">
       </app-form-field>
 
-      <app-form-field label="Nombre de copies" icon="fa-copy" for="noOfCopies" [invalid]="noOfCopies.invalid && noOfCopies.touched">
+      <app-form-field label="Nombre de copies" icon="ph-copy" for="noOfCopies" [invalid]="noOfCopies.invalid && noOfCopies.touched">
         <input
           type="number"
           min="0"
@@ -77,17 +77,17 @@
       </app-form-field>
 
       <div *ngIf="successMessage" class="alert alert-success mb-0">
-        <i class="fas fa-check-circle" aria-hidden="true"></i> {{ successMessage }}
+        <i class="ph ph-check-circle" aria-hidden="true"></i> {{ successMessage }}
       </div>
 
       <div *ngIf="error" class="alert alert-danger mb-0">
-        <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
+        <i class="ph ph-warning-circle" aria-hidden="true"></i> {{ error }}
       </div>
     </div>
 
     <div class="modal-footer">
       <app-button variant="outline" type="button" (clicked)="closeModal()">Annuler</app-button>
-      <app-button variant="success" type="submit" icon="fa-save" [loading]="submitting" loadingText="Enregistrement...">Enregistrer</app-button>
+      <app-button variant="success" type="submit" icon="ph-floppy-disk" [loading]="submitting" loadingText="Enregistrement...">Enregistrer</app-button>
     </div>
   </form>
 </div>

@@ -1,6 +1,6 @@
 <main class="page-shell">
   <div class="page-header">
-    <h2 class="page-title"><i class="fas fa-book" aria-hidden="true"></i> Liste des livres</h2>
+    <h2 class="page-title"><i class="ph ph-book" aria-hidden="true"></i> Liste des livres</h2>
     <p class="page-subtitle">Consultez, modifiez et supprimez les ouvrages disponibles.</p>
   </div>
 
@@ -11,10 +11,10 @@
     [error]="error"
     [empty]="!loading && !error && filteredBooks.length === 0"
     loadingLabel="Chargement des livres..."
-    [emptyIcon]="books.length === 0 ? 'fa-book-open' : 'fa-magnifying-glass'"
+    [emptyIcon]="books.length === 0 ? 'ph-book-open' : 'ph-magnifying-glass'"
     [emptyLabel]="books.length === 0 ? 'Aucun livre trouvé.' : 'Aucun résultat pour cette recherche.'"
     (retry)="getBooks()">
-    <app-button *ngIf="books.length === 0" empty-action variant="primary" icon="fa-plus" (clicked)="createBookForm.openModal()">Ajouter un livre</app-button>
+    <app-button *ngIf="books.length === 0" empty-action variant="primary" icon="ph-plus" (clicked)="createBookForm.openModal()">Ajouter un livre</app-button>
 
     <table class="table table-striped responsive-table-card">
       <thead>
@@ -34,15 +34,15 @@
           <td data-label="Disponibilité">
             <app-badge
               [variant]="book.noOfCopies > 0 ? 'available' : 'overdue'"
-              [icon]="book.noOfCopies > 0 ? 'fa-check-circle' : 'fa-times-circle'">
+              [icon]="book.noOfCopies > 0 ? 'ph-check-circle' : 'ph-x-circle'">
               {{ book.noOfCopies > 0 ? (book.noOfCopies + ' dispo.') : 'Épuisé' }}
             </app-badge>
           </td>
           <td data-label="Actions">
             <div class="action-group">
-              <app-button variant="success" size="sm" icon="fa-eye" (clicked)="bookDetails(book.bookId)">Voir</app-button>
-              <app-button variant="secondary" size="sm" icon="fa-edit" (clicked)="updateBook(book.bookId)">Modifier</app-button>
-              <app-button variant="danger" size="sm" icon="fa-trash" (clicked)="askDeleteBook(book)">Supprimer</app-button>
+              <app-button variant="success" size="sm" icon="ph-eye" (clicked)="bookDetails(book.bookId)">Voir</app-button>
+              <app-button variant="secondary" size="sm" icon="ph-pencil-simple" (clicked)="updateBook(book.bookId)">Modifier</app-button>
+              <app-button variant="danger" size="sm" icon="ph-trash" (clicked)="askDeleteBook(book)">Supprimer</app-button>
             </div>
           </td>
         </tr>

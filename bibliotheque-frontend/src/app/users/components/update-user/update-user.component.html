@@ -1,7 +1,7 @@
 <main class="page-shell">
   <section class="form-card fade-in">
     <div class="card-header">
-      <h3 class="mb-0 form-title"><span class="form-title-icon"><i class="fas fa-user-edit" aria-hidden="true"></i></span> Modifier l'utilisateur</h3>
+      <h3 class="mb-0 form-title"><span class="form-title-icon"><i class="ph ph-user-gear" aria-hidden="true"></i></span> Modifier l'utilisateur</h3>
       <p class="form-subtitle">Mettez à jour les informations et le rôle de ce compte.</p>
     </div>
 
@@ -9,28 +9,28 @@
       <h4 class="form-section-title">Identité et accès</h4>
       <div class="row g-3">
         <div class="col-12 col-md-6">
-          <label class="form-label" for="name"><i class="fas fa-user" aria-hidden="true"></i> Nom</label>
+          <label class="form-label" for="name"><i class="ph ph-user" aria-hidden="true"></i> Nom</label>
           <input type="text" class="form-control" id="name" [(ngModel)]="user.name" name="name">
         </div>
         <div class="col-12 col-md-6">
-          <label class="form-label" for="username"><i class="fas fa-at" aria-hidden="true"></i> Username</label>
+          <label class="form-label" for="username"><i class="ph ph-at" aria-hidden="true"></i> Username</label>
           <input type="text" class="form-control" id="username" [(ngModel)]="user.username" name="username">
         </div>
         <div class="col-12 col-md-6">
-          <label class="form-label" for="role"><i class="fas fa-user-tag" aria-hidden="true"></i> Rôle</label>
+          <label class="form-label" for="role"><i class="ph ph-identification-badge" aria-hidden="true"></i> Rôle</label>
           <app-select id="role" [options]="roleOptions" [(ngModel)]="user.role[0].roleName" name="role"></app-select>
         </div>
       </div>
 
       <div *ngIf="error" class="alert alert-danger mt-3">
-        <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
+        <i class="ph ph-warning-circle" aria-hidden="true"></i> {{ error }}
       </div>
 
       <div class="form-actions">
-        <a class="btn btn-outline" routerLink="/users"><i class="fas fa-arrow-left" aria-hidden="true"></i> Retour</a>
+        <a class="btn btn-outline" routerLink="/users"><i class="ph ph-arrow-left" aria-hidden="true"></i> Retour</a>
         <button class="btn btn-success" type="submit" [disabled]="submitting">
           <span *ngIf="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-          <span *ngIf="!submitting"><i class="fas fa-save" aria-hidden="true"></i> Mettre à jour</span>
+          <span *ngIf="!submitting"><i class="ph ph-floppy-disk" aria-hidden="true"></i> Mettre à jour</span>
           <span *ngIf="submitting">Mise à jour...</span>
         </button>
       </div>

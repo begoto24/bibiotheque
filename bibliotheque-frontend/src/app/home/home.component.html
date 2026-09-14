@@ -1,16 +1,16 @@
 <main class="page-shell dashboard fade-in" *ngIf="isAdmin(); else adherentOrPublicHome">
   <div class="page-header">
-    <h2 class="page-title"><i class="fas fa-gauge-high" aria-hidden="true"></i> Tableau de bord</h2>
+    <h2 class="page-title"><i class="ph ph-gauge" aria-hidden="true"></i> Tableau de bord</h2>
     <p class="page-subtitle">Vue d'ensemble de la bibliothèque.</p>
   </div>
 
   <div *ngIf="statsError" class="alert alert-danger">
-    <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ statsError }}
+    <i class="ph ph-warning-circle" aria-hidden="true"></i> {{ statsError }}
   </div>
 
   <div class="stat-grid">
     <div class="stat-card">
-      <span class="stat-icon stat-icon--primary"><i class="fas fa-book" aria-hidden="true"></i></span>
+      <span class="stat-icon stat-icon--primary"><i class="ph ph-book" aria-hidden="true"></i></span>
       <div class="stat-body">
         <span class="stat-value" *ngIf="!loadingStats">{{ stats.books }}</span>
         <app-skeleton *ngIf="loadingStats" shape="text" width="52px" height="28px"></app-skeleton>
@@ -19,7 +19,7 @@
     </div>
 
     <div class="stat-card">
-      <span class="stat-icon stat-icon--accent"><i class="fas fa-users" aria-hidden="true"></i></span>
+      <span class="stat-icon stat-icon--accent"><i class="ph ph-users" aria-hidden="true"></i></span>
       <div class="stat-body">
         <span class="stat-value" *ngIf="!loadingStats">{{ stats.users }}</span>
         <app-skeleton *ngIf="loadingStats" shape="text" width="52px" height="28px"></app-skeleton>
@@ -28,7 +28,7 @@
     </div>
 
     <div class="stat-card">
-      <span class="stat-icon stat-icon--warning"><i class="fas fa-calendar-check" aria-hidden="true"></i></span>
+      <span class="stat-icon stat-icon--warning"><i class="ph ph-calendar-check" aria-hidden="true"></i></span>
       <div class="stat-body">
         <span class="stat-value" *ngIf="!loadingStats">{{ stats.pendingReservations }}</span>
         <app-skeleton *ngIf="loadingStats" shape="text" width="52px" height="28px"></app-skeleton>
@@ -37,7 +37,7 @@
     </div>
 
     <div class="stat-card">
-      <span class="stat-icon stat-icon--success"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i></span>
+      <span class="stat-icon stat-icon--success"><i class="ph ph-hand-heart" aria-hidden="true"></i></span>
       <div class="stat-body">
         <span class="stat-value" *ngIf="!loadingStats">{{ stats.activeBorrows }}</span>
         <app-skeleton *ngIf="loadingStats" shape="text" width="52px" height="28px"></app-skeleton>
@@ -48,26 +48,26 @@
 
   <h3 class="section-title">Actions rapides</h3>
   <div class="quick-actions">
-    <app-button variant="primary" icon="fa-book" routerLink="/books">Gérer les livres</app-button>
-    <app-button variant="secondary" icon="fa-users" routerLink="/users">Gérer les utilisateurs</app-button>
-    <app-button variant="outline" icon="fa-calendar-check" routerLink="/reservations">Voir les réservations</app-button>
+    <app-button variant="primary" icon="ph-book" routerLink="/books">Gérer les livres</app-button>
+    <app-button variant="secondary" icon="ph-users" routerLink="/users">Gérer les utilisateurs</app-button>
+    <app-button variant="outline" icon="ph-calendar-check" routerLink="/reservations">Voir les réservations</app-button>
   </div>
 </main>
 
 <ng-template #adherentOrPublicHome>
   <main class="page-shell dashboard fade-in" *ngIf="isLoggedIn(); else publicHome">
     <div class="page-header">
-      <h2 class="page-title"><i class="fas fa-gauge-high" aria-hidden="true"></i> Tableau de bord</h2>
+      <h2 class="page-title"><i class="ph ph-gauge" aria-hidden="true"></i> Tableau de bord</h2>
       <p class="page-subtitle">Bonjour {{ getUserName() }}, voici où vous en êtes.</p>
     </div>
 
     <div *ngIf="adherentStatsError" class="alert alert-danger">
-      <i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ adherentStatsError }}
+      <i class="ph ph-warning-circle" aria-hidden="true"></i> {{ adherentStatsError }}
     </div>
 
     <div class="stat-grid">
       <div class="stat-card">
-        <span class="stat-icon stat-icon--warning"><i class="fas fa-calendar-check" aria-hidden="true"></i></span>
+        <span class="stat-icon stat-icon--warning"><i class="ph ph-calendar-check" aria-hidden="true"></i></span>
         <div class="stat-body">
           <span class="stat-value" *ngIf="!loadingAdherentStats">{{ adherentStats.activeReservations }} / {{ maxActiveReservations }}</span>
           <app-skeleton *ngIf="loadingAdherentStats" shape="text" width="52px" height="28px"></app-skeleton>
@@ -76,7 +76,7 @@
       </div>
 
       <div class="stat-card">
-        <span class="stat-icon stat-icon--success"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i></span>
+        <span class="stat-icon stat-icon--success"><i class="ph ph-hand-heart" aria-hidden="true"></i></span>
         <div class="stat-body">
           <span class="stat-value" *ngIf="!loadingAdherentStats">{{ adherentStats.activeBorrows }}</span>
           <app-skeleton *ngIf="loadingAdherentStats" shape="text" width="52px" height="28px"></app-skeleton>
@@ -86,7 +86,7 @@
 
       <div class="stat-card" [class.stat-card--alert]="adherentStats.overdueBorrows > 0">
         <span class="stat-icon" [ngClass]="adherentStats.overdueBorrows > 0 ? 'stat-icon--danger' : 'stat-icon--accent'">
-          <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+          <i class="ph ph-warning" aria-hidden="true"></i>
         </span>
         <div class="stat-body">
           <span class="stat-value" *ngIf="!loadingAdherentStats">{{ adherentStats.overdueBorrows }}</span>
@@ -98,9 +98,9 @@
 
     <h3 class="section-title">Actions rapides</h3>
     <div class="quick-actions">
-      <app-button variant="primary" icon="fa-calendar-check" routerLink="/reservations">Mes réservations</app-button>
-      <app-button variant="secondary" icon="fa-hand-holding-heart" routerLink="/borrow">Emprunter un livre</app-button>
-      <app-button variant="outline" icon="fa-undo-alt" routerLink="/borrow/return">Rendre un livre</app-button>
+      <app-button variant="primary" icon="ph-calendar-check" routerLink="/reservations">Mes réservations</app-button>
+      <app-button variant="secondary" icon="ph-hand-heart" routerLink="/borrow">Emprunter un livre</app-button>
+      <app-button variant="outline" icon="ph-arrow-counter-clockwise" routerLink="/borrow/return">Rendre un livre</app-button>
     </div>
   </main>
 </ng-template>
@@ -110,34 +110,34 @@
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container">
       <div class="hero-content text-center fade-in">
-        <i class="fas fa-book-open hero-logo" aria-hidden="true"></i>
+        <i class="ph ph-book-open hero-logo" aria-hidden="true"></i>
         <h1 class="hero-title">Bienvenue à la Bibliothèque</h1>
         <p class="hero-subtitle">
           Gérez vos livres, emprunts, retours et réservations en toute simplicité.
         </p>
         <div class="hero-actions">
           <a class="btn btn-primary btn-lg" routerLink="/books">
-            <i class="fas fa-book" aria-hidden="true"></i> Explorer les livres
+            <i class="ph ph-book" aria-hidden="true"></i> Explorer les livres
           </a>
           <a class="btn btn-outline btn-lg" routerLink="/login" *ngIf="!isLoggedIn()">
-            <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Se connecter
+            <i class="ph ph-sign-in" aria-hidden="true"></i> Se connecter
           </a>
         </div>
       </div>
 
       <div class="feature-grid">
         <div class="feature-card card fade-in">
-          <span class="feature-icon-chip"><i class="fas fa-book feature-icon" aria-hidden="true"></i></span>
+          <span class="feature-icon-chip"><i class="ph ph-book feature-icon" aria-hidden="true"></i></span>
           <h3 class="feature-title">Catalogue</h3>
           <p class="feature-text">Consultez et gérez tous les ouvrages disponibles.</p>
         </div>
         <div class="feature-card card fade-in">
-          <span class="feature-icon-chip"><i class="fas fa-hand-holding-heart feature-icon" aria-hidden="true"></i></span>
+          <span class="feature-icon-chip"><i class="ph ph-hand-heart feature-icon" aria-hidden="true"></i></span>
           <h3 class="feature-title">Emprunts</h3>
           <p class="feature-text">Empruntez et suivez vos lectures en cours.</p>
         </div>
         <div class="feature-card card fade-in">
-          <span class="feature-icon-chip"><i class="fas fa-calendar-check feature-icon" aria-hidden="true"></i></span>
+          <span class="feature-icon-chip"><i class="ph ph-calendar-check feature-icon" aria-hidden="true"></i></span>
           <h3 class="feature-title">Réservations</h3>
           <p class="feature-text">Réservez vos livres et gérez les disponibilités.</p>
         </div>

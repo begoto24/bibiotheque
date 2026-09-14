@@ -1,6 +1,6 @@
 <main class="page-shell">
   <div class="page-header">
-    <h2 class="page-title"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i> Emprunter un livre</h2>
+    <h2 class="page-title"><i class="ph ph-hand-heart" aria-hidden="true"></i> Emprunter un livre</h2>
     <p class="page-subtitle">Choisissez un ouvrage disponible dans la bibliothèque.</p>
   </div>
 
@@ -8,10 +8,10 @@
     <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
     Traitement de l'emprunt...
   </div>
-  <div *ngIf="error" class="alert alert-danger"><i class="fas fa-exclamation-circle" aria-hidden="true"></i> {{ error }}</div>
-  <div *ngIf="success" class="alert alert-success"><i class="fas fa-check-circle" aria-hidden="true"></i> {{ success }}</div>
+  <div *ngIf="error" class="alert alert-danger"><i class="ph ph-warning-circle" aria-hidden="true"></i> {{ error }}</div>
+  <div *ngIf="success" class="alert alert-success"><i class="ph ph-check-circle" aria-hidden="true"></i> {{ success }}</div>
   <div *ngIf="!loading && !error && books.length === 0" class="empty-state">
-    <i class="fas fa-book empty-icon" aria-hidden="true"></i>
+    <i class="ph ph-book empty-icon" aria-hidden="true"></i>
     Aucun livre disponible.
   </div>
 
@@ -35,13 +35,13 @@
           <td data-label="Genre">{{ book.bookGenre }}</td>
           <td data-label="Disponibilité">
             <span class="badge" [ngClass]="book.noOfCopies > 0 ? 'badge-available' : 'badge-overdue'">
-              <i class="fas" [ngClass]="book.noOfCopies > 0 ? 'fa-check-circle' : 'fa-times-circle'" aria-hidden="true"></i>
+              <i class="ph" [ngClass]="book.noOfCopies > 0 ? 'ph-check-circle' : 'ph-x-circle'" aria-hidden="true"></i>
               {{ book.noOfCopies > 0 ? (book.noOfCopies + ' dispo.') : 'Épuisé' }}
             </span>
           </td>
           <td data-label="Action">
             <button (click)="borrowBook(book.bookId)" class="btn btn-success btn-sm" [disabled]="loading">
-              <i class="fas fa-hand-holding-heart" aria-hidden="true"></i> Emprunter
+              <i class="ph ph-hand-heart" aria-hidden="true"></i> Emprunter
             </button>
           </td>
         </tr>

@@ -20,7 +20,7 @@ export class TableStateComponent {
   @Input() error: string | null = '';
   @Input() empty = false;
   @Input() loadingLabel = 'Chargement...';
-  @Input() emptyIcon = 'fa-inbox';
+  @Input() emptyIcon = 'ph-tray';
   @Input() emptyLabel = 'Aucun élément trouvé.';
   /** Nombre de lignes fantômes affichées pendant [loading]. */
   @Input() skeletonRowCount = 5;

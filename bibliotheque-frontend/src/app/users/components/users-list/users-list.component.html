@@ -1,6 +1,6 @@
 <main class="page-shell">
   <div class="page-header">
-    <h2 class="page-title"><i class="fas fa-users" aria-hidden="true"></i> Liste des utilisateurs</h2>
+    <h2 class="page-title"><i class="ph ph-users" aria-hidden="true"></i> Liste des utilisateurs</h2>
     <p class="page-subtitle">Gérez les comptes et consultez les historiques d'emprunt.</p>
   </div>
 
@@ -11,10 +11,10 @@
     [error]="error"
     [empty]="!loading && !error && filteredUsers.length === 0"
     loadingLabel="Chargement des utilisateurs..."
-    [emptyIcon]="users.length === 0 ? 'fa-user-slash' : 'fa-magnifying-glass'"
+    [emptyIcon]="users.length === 0 ? 'ph-user-minus' : 'ph-magnifying-glass'"
     [emptyLabel]="users.length === 0 ? 'Aucun utilisateur trouvé.' : 'Aucun résultat pour cette recherche.'"
     (retry)="getUsers()">
-    <app-button *ngIf="users.length === 0" empty-action variant="primary" icon="fa-user-plus" (clicked)="registrationForm.openModal()">Ajouter un utilisateur</app-button>
+    <app-button *ngIf="users.length === 0" empty-action variant="primary" icon="ph-user-plus" (clicked)="registrationForm.openModal()">Ajouter un utilisateur</app-button>
 
     <table class="table table-striped responsive-table-card">
       <thead>
@@ -33,17 +33,17 @@
           <td data-label="Rôle">
             <app-badge
               [variant]="roleName(user) === 'Admin' ? 'role-admin' : 'role-user'"
-              [icon]="roleName(user) === 'Admin' ? 'fa-shield-halved' : 'fa-user'">
+              [icon]="roleName(user) === 'Admin' ? 'ph-shield-check' : 'ph-user'">
               {{ roleName(user) }}
             </app-badge>
           </td>
           <td data-label="Historique">
-            <app-button *ngIf="roleName(user) === 'User'" variant="success" size="sm" icon="fa-eye" (clicked)="userDetails(user.userId)">Voir</app-button>
+            <app-button *ngIf="roleName(user) === 'User'" variant="success" size="sm" icon="ph-eye" (clicked)="userDetails(user.userId)">Voir</app-button>
           </td>
           <td data-label="Actions">
             <div class="action-group">
-              <app-button variant="secondary" size="sm" icon="fa-edit" (clicked)="updateUser(user.userId)">Modifier</app-button>
-              <app-button variant="danger" size="sm" icon="fa-trash" (clicked)="askDeleteUser(user)">Supprimer</app-button>
+              <app-button variant="secondary" size="sm" icon="ph-pencil-simple" (clicked)="updateUser(user.userId)">Modifier</app-button>
+              <app-button variant="danger" size="sm" icon="ph-trash" (clicked)="askDeleteUser(user)">Supprimer</app-button>
             </div>
           </td>
         </tr>

@@ -14,7 +14,7 @@ import { Component, Input } from '@angular/core';
   imports: [CommonModule],
   template: `
     <span class="badge" [ngClass]="'badge-' + variant">
-      <i *ngIf="icon" class="fas" [ngClass]="icon" aria-hidden="true"></i>
+      <i *ngIf="icon" class="ph" [ngClass]="icon" aria-hidden="true"></i>
       <ng-content></ng-content>
     </span>
   `
