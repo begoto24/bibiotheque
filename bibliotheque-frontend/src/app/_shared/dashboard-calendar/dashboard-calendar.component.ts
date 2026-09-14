@@ -6,6 +6,7 @@ import { BadgeComponent } from '../badge/badge.component';
 import { ButtonComponent } from '../button/button.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { SkeletonComponent } from '../skeleton/skeleton.component';
+import { parseBorrowDate } from '../../_core/utils/date.util';
 import { Books } from '../../_model/books';
 import { Borrow } from '../../_model/borrow';
 import { Reservation } from '../../_model/reservation.model';
@@ -296,7 +297,7 @@ export class DashboardCalendarComponent implements OnInit {
     if (!borrow.returnDate) {
       const dueKey = this.toDateKey(borrow.dueDate);
       if (dueKey) {
-        const overdue = new Date(borrow.dueDate) < new Date();
+        const overdue = (parseBorrowDate(borrow.dueDate) || new Date(0)) < new Date();
         this.pushEvent(map, dueKey, {
           type: 'borrow-due',
           icon: overdue ? 'ph-warning' : 'ph-clock',
@@ -345,11 +346,11 @@ export class DashboardCalendarComponent implements OnInit {
   }
 
   private toDateKey(value: string | Date | null | undefined): string | null {
-    if (!value) {
-      return null;
-    }
-    const date = value instanceof Date ? value : new Date(value);
-    if (isNaN(date.getTime())) {
+    // parseBorrowDate gère aussi bien le "dd-MM-yyyy" propre à Borrow que
+    // l'ISO utilisé partout ailleurs (ex. Reservation) — un seul point de
+    // parsing pour les deux formats de date que ce calendrier combine.
+    const date = parseBorrowDate(value);
+    if (!date) {
       return null;
     }
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;

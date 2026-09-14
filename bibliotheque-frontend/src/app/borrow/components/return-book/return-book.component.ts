@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
+import { formatBorrowDate } from '../../../_core/utils/date.util';
 import { Books } from '../../../_model/books';
 import { Borrow } from '../../../_model/borrow';
 import { BooksService } from '../../../books/services/books.service';
@@ -37,6 +38,16 @@ export class ReturnBookComponent implements OnInit {
       next: data => this.books = data,
       error: error => this.error = error.message
     });
+  }
+
+  /** Borrow ne porte que bookId : on résout le titre côté vue via la liste des livres déjà chargée. */
+  bookTitle(bookId: number): string {
+    const book = this.books.find(b => b.bookId === bookId);
+    return book ? book.bookName : `Livre #${bookId}`;
+  }
+
+  formatDate(value: Date | string): string {
+    return formatBorrowDate(value);
   }
 
   

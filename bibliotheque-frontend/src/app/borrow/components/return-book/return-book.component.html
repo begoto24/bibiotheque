@@ -28,13 +28,13 @@
       </thead>
       <tbody>
         <tr *ngFor="let b of borrow" class="fade-in">
-          <td data-label="Livre"><span class="cell-strong">{{ b.bookId }}</span></td>
-          <td data-label="Date emprunt">{{ b.issueDate }}</td>
-          <td data-label="Date limite">{{ b.dueDate }}</td>
+          <td data-label="Livre"><span class="cell-strong">{{ bookTitle(b.bookId) }}</span></td>
+          <td data-label="Date emprunt">{{ formatDate(b.issueDate) }}</td>
+          <td data-label="Date limite">{{ formatDate(b.dueDate) }}</td>
           <td data-label="Statut">
             <span class="badge" [ngClass]="b.returnDate === null ? 'badge-borrowed' : 'badge-available'">
               <i class="ph" [ngClass]="b.returnDate === null ? 'ph-clock' : 'ph-check-circle'" aria-hidden="true"></i>
-              {{ b.returnDate === null ? 'En cours' : ('Rendu le ' + b.returnDate) }}
+              {{ b.returnDate === null ? 'En cours' : ('Rendu le ' + formatDate(b.returnDate)) }}
             </span>
           </td>
           <td data-label="Action">
